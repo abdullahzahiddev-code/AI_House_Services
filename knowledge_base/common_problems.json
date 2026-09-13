@@ -1,0 +1,82 @@
+[
+  {
+    "category": "Plumber",
+    "problem": "Kitchen sink leaking from beneath the cabinet",
+    "likely_cause": "Drain pipe loose connection or P-trap seal failure",
+    "urgency": "Medium",
+    "skills_needed": ["Drain repair", "Pipe fitting", "P-trap installation"],
+    "estimated_time": "1-2 hours",
+    "estimated_cost_pkr": "1000-3000",
+    "safety_note": "Turn off water supply valve under sink before repair"
+  },
+  {
+    "category": "Plumber",
+    "problem": "Bathroom tap dripping continuously",
+    "likely_cause": "Worn washer or cartridge inside the tap",
+    "urgency": "Low",
+    "skills_needed": ["Tap repair", "Washer replacement"],
+    "estimated_time": "30 minutes",
+    "estimated_cost_pkr": "500-1500",
+    "safety_note": "Turn off water supply before repair"
+  },
+  {
+    "category": "Plumber",
+    "problem": "Toilet running continuously",
+    "likely_cause": "Float ball adjustment needed or flapper valve worn out",
+    "urgency": "Medium",
+    "skills_needed": ["Toilet repair", "Flush mechanism repair"],
+    "estimated_time": "1 hour",
+    "estimated_cost_pkr": "800-2000",
+    "safety_note": "None"
+  },
+  {
+    "category": "Electrician",
+    "problem": "MCB/breaker keeps tripping",
+    "likely_cause": "Circuit overload or short circuit somewhere on the circuit",
+    "urgency": "High",
+    "skills_needed": ["Load balancing", "Short circuit detection", "MCB replacement"],
+    "estimated_time": "1-3 hours",
+    "estimated_cost_pkr": "1500-5000",
+    "safety_note": "Do not reset breaker multiple times. Call electrician immediately."
+  },
+  {
+    "category": "Electrician",
+    "problem": "Electrical switch making sparking sound",
+    "likely_cause": "Loose wiring or worn-out switch contacts",
+    "urgency": "High",
+    "skills_needed": ["Switch replacement", "Wiring inspection"],
+    "estimated_time": "30-60 minutes",
+    "estimated_cost_pkr": "500-2000",
+    "safety_note": "Turn off the circuit from the breaker panel. Do NOT use the switch."
+  },
+  {
+    "category": "AC Technician",
+    "problem": "AC running but not cooling the room",
+    "likely_cause": "Low refrigerant gas, dirty filter, or compressor issue",
+    "urgency": "Medium",
+    "skills_needed": ["Gas charging", "Filter cleaning", "Compressor diagnosis"],
+    "estimated_time": "1-3 hours",
+    "estimated_cost_pkr": "2000-8000",
+    "safety_note": "Do not attempt to add refrigerant yourself - requires specialist equipment"
+  },
+  {
+    "category": "AC Technician",
+    "problem": "Water dripping from indoor AC unit",
+    "likely_cause": "Clogged drain pipe or tilted indoor unit",
+    "urgency": "Medium",
+    "skills_needed": ["Drain pipe cleaning", "Unit leveling"],
+    "estimated_time": "1 hour",
+    "estimated_cost_pkr": "1000-3000",
+    "safety_note": "Place a bucket under the unit until repaired to avoid floor damage"
+  },
+  {
+    "category": "Appliance Repair",
+    "problem": "Washing machine not starting",
+    "likely_cause": "Door latch issue, power supply problem, or motor fault",
+    "urgency": "Medium",
+    "skills_needed": ["Appliance diagnosis", "Motor repair", "PCB troubleshooting"],
+    "estimated_time": "1-2 hours",
+    "estimated_cost_pkr": "1000-5000",
+    "safety_note": "Unplug before any inspection"
+  }
+]

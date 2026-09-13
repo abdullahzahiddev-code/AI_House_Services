@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}AI Conversation History — AI HomeService{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <h4 class="fw-bold mb-4">🤖 AI Conversation History</h4>
+    {% if conversations %}
+    {% for conv in conversations %}
+    <div class="card mb-3 shadow-sm">
+        <div class="card-header bg-white d-flex justify-content-between">
+            <h6 class="mb-0">{{ conv.session_title|truncatechars:60|default:"Conversation" }}</h6>
+            <small class="text-muted">{{ conv.created_at|date:"M d, Y g:i A" }}</small>
+        </div>
+        <div class="card-body">
+            {% for msg in conv.messages.all|slice:":4" %}
+            <div class="d-flex mb-2 {% if msg.role == 'user' %}justify-content-end{% endif %}">
+                <div class="message-bubble {{ msg.role }}" style="max-width:70%">
+                    <small class="text-muted d-block mb-1">{{ msg.get_role_display }}</small>
+                    {{ msg.content|truncatechars:200 }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="text-center py-5 text-muted">
+        <div style="font-size:3rem">💬</div>
+        <p>No conversations yet. <a href="{% url 'ai_assistant:chat' %}">Ask the AI Assistant</a></p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

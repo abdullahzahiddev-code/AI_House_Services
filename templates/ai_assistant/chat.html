@@ -1,0 +1,1479 @@
+
+{% extends 'base.html' %}
+
+{% block title %}AI Assistant — AI HomeService{% endblock %}
+
+{% block extra_css %}
+<style>
+/* =========================================================
+   AI ASSISTANT — PROFESSIONAL DASHBOARD UI
+========================================================= */
+
+.ai-page {
+    min-height: calc(100vh - 80px);
+    padding: 1.25rem;
+    background:
+        radial-gradient(circle at top left, rgba(16, 79, 46, 0.06), transparent 30%),
+        #f5f7f9;
+}
+
+/* =========================
+   Main Layout
+========================= */
+
+.ai-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.9fr);
+    gap: 1.25rem;
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+/* =========================
+   Main Cards
+========================= */
+
+.ai-card {
+    background: #ffffff;
+    border: 1px solid #e7ebee;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.ai-card:hover {
+    box-shadow: 0 12px 35px rgba(15, 23, 42, 0.09);
+}
+
+/* =========================
+   Chat Card
+========================= */
+
+.chat-card {
+    height: calc(100vh - 110px);
+    min-height: 620px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* =========================
+   Chat Header
+========================= */
+
+.ai-header {
+    position: relative;
+    padding: 1.15rem 1.25rem;
+    color: #ffffff;
+    background: linear-gradient(135deg, #104f2e 0%, #1a6230 55%, #23743c 100%);
+    overflow: hidden;
+}
+
+.ai-header::after {
+    content: "";
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    right: -60px;
+    top: -90px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.ai-header-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.ai-avatar {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 1.55rem;
+    animation: avatarFloat 3s ease-in-out infinite;
+}
+
+.ai-header-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.ai-header-subtitle {
+    display: block;
+    margin-top: 3px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.76rem;
+}
+
+.ai-status {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.38rem 0.65rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    font-size: 0.72rem;
+    white-space: nowrap;
+}
+
+.ai-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #65e572;
+    box-shadow: 0 0 0 4px rgba(101, 229, 114, 0.12);
+    animation: pulse 2s infinite;
+}
+
+/* =========================
+   Messages
+========================= */
+
+.messages-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.4rem;
+    background:
+        radial-gradient(circle at 20% 10%, rgba(16, 79, 46, 0.025), transparent 25%),
+        #f8fafc;
+    scroll-behavior: smooth;
+}
+
+.messages-area::-webkit-scrollbar,
+.providers-area::-webkit-scrollbar {
+    width: 6px;
+}
+
+.messages-area::-webkit-scrollbar-thumb,
+.providers-area::-webkit-scrollbar-thumb {
+    background: #cfd6dc;
+    border-radius: 10px;
+}
+
+/* =========================
+   Welcome Message
+========================= */
+
+.welcome-message {
+    animation: messageEnter 0.5s ease both;
+}
+
+.message-bubble {
+    max-width: 82%;
+    padding: 0.9rem 1rem;
+    border-radius: 16px;
+    line-height: 1.6;
+    font-size: 0.88rem;
+    animation: messageEnter 0.35s ease both;
+}
+
+.message-bubble.assistant {
+    background: #ffffff;
+    border: 1px solid #e5e9ed;
+    border-top-left-radius: 5px;
+    color: #27313a;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.045);
+}
+
+.message-bubble.user {
+    background: linear-gradient(135deg, #145b35, #23743c);
+    color: #ffffff;
+    border-top-right-radius: 5px;
+    box-shadow: 0 5px 16px rgba(16, 79, 46, 0.18);
+}
+
+.message-bubble p {
+    line-height: 1.55;
+}
+
+.message-bubble ul {
+    padding-left: 1.2rem;
+}
+
+.message-bubble li {
+    margin-bottom: 0.3rem;
+}
+
+/* =========================
+   Input Area
+========================= */
+
+.chat-footer {
+    padding: 1rem 1.15rem;
+    background: #ffffff;
+    border-top: 1px solid #e8ecef;
+}
+
+.location-input {
+    margin-bottom: 0.7rem;
+}
+
+.location-input .input-group-text {
+    background: #f8fafc;
+    border-color: #dfe5e9;
+}
+
+.location-input .form-control {
+    background: #f8fafc;
+    border-color: #dfe5e9;
+}
+
+.problem-input-group {
+    display: flex;
+    align-items: stretch;
+    gap: 0.6rem;
+}
+
+.problem-input {
+    min-height: 52px;
+    border: 1px solid #dce3e7 !important;
+    border-radius: 12px !important;
+    padding: 0.8rem 1rem;
+    resize: none;
+    transition: all 0.25s ease;
+}
+
+.problem-input:focus {
+    border-color: #287746 !important;
+    box-shadow: 0 0 0 4px rgba(40, 119, 70, 0.09) !important;
+}
+
+.send-button {
+    width: 54px;
+    min-width: 54px;
+    border: none;
+    border-radius: 12px !important;
+    background: linear-gradient(135deg, #145b35, #23743c);
+    box-shadow: 0 6px 15px rgba(20, 91, 53, 0.18);
+    transition: all 0.25s ease;
+}
+
+.send-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 9px 20px rgba(20, 91, 53, 0.25);
+}
+
+.send-button:active {
+    transform: translateY(0);
+}
+
+.footer-hint {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.55rem;
+    color: #89939c;
+    font-size: 0.68rem;
+}
+
+/* =========================
+   Right Provider Panel
+========================= */
+
+.providers-card {
+    height: calc(100vh - 110px);
+    min-height: 620px;
+    display: flex;
+    flex-direction: column;
+}
+
+.providers-header {
+    padding: 1.15rem 1.25rem;
+    border-bottom: 1px solid #e9edef;
+    background: #ffffff;
+}
+
+.providers-title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.providers-icon {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    background: #edf7f0;
+    color: #176037;
+}
+
+.providers-title {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #202a30;
+}
+
+.providers-subtitle {
+    margin: 3px 0 0;
+    color: #8a949b;
+    font-size: 0.72rem;
+}
+
+.providers-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    background: #f8fafc;
+}
+
+/* =========================
+   Empty Provider State
+========================= */
+
+.empty-providers {
+    min-height: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.empty-provider-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    background: #edf7f0;
+    color: #176037;
+    font-size: 1.8rem;
+    animation: softFloat 3s ease-in-out infinite;
+}
+
+/* =========================
+   Provider Cards
+========================= */
+
+.provider-card {
+    background: #ffffff;
+    border: 1px solid #e7ecef;
+    border-radius: 15px;
+    padding: 1rem;
+    margin-bottom: 0.85rem;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.045);
+    transition: all 0.3s ease;
+    animation: cardEnter 0.4s ease both;
+}
+
+.provider-card:hover {
+    transform: translateY(-4px);
+    border-color: #c9ddd0;
+    box-shadow: 0 12px 25px rgba(15, 23, 42, 0.09);
+}
+
+.provider-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.provider-rank {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 27px;
+    height: 27px;
+    border-radius: 8px;
+    background: #fff4d8;
+    color: #8b6816;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.provider-name {
+    color: #202a30;
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+
+.provider-rating {
+    text-align: right;
+}
+
+.provider-rating .stars {
+    font-size: 0.72rem;
+    letter-spacing: -2px;
+}
+
+.provider-rating-value {
+    display: block;
+    margin-top: 2px;
+    color: #89939c;
+    font-size: 0.66rem;
+}
+
+.provider-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.45rem;
+    margin: 0.85rem 0;
+    color: #7a858d;
+    font-size: 0.69rem;
+}
+
+.provider-detail {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.provider-detail i {
+    color: #176037;
+}
+
+.provider-detail.full {
+    grid-column: 1 / -1;
+}
+
+/* =========================
+   Match Score
+========================= */
+
+.match-score {
+    margin-top: 0.7rem;
+    margin-bottom: 0.85rem;
+}
+
+.match-score-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.35rem;
+    font-size: 0.68rem;
+}
+
+.match-score-label {
+    color: #89939c;
+}
+
+.match-score-value {
+    color: #176037;
+    font-weight: 700;
+}
+
+.match-progress {
+    height: 6px;
+    overflow: hidden;
+    border-radius: 20px;
+    background: #edf0f2;
+}
+
+.match-progress-bar {
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #287746, #52a36a);
+    animation: progressGrow 0.8s ease both;
+}
+
+/* =========================
+   Provider Button
+========================= */
+
+.provider-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.58rem 0.75rem;
+    border: 1px solid #287746;
+    border-radius: 9px;
+    color: #176037;
+    background: #ffffff;
+    text-decoration: none;
+    font-size: 0.72rem;
+    font-weight: 600;
+    transition: all 0.25s ease;
+}
+
+.provider-button:hover {
+    background: #176037;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+/* =========================
+   Typing Animation
+========================= */
+
+.typing-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 0;
+}
+
+.typing-indicator span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #7b878f;
+    animation: typing 1.3s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+/* =========================
+   Animations
+========================= */
+
+@keyframes messageEnter {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes cardEnter {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes progressGrow {
+    from {
+        width: 0;
+    }
+}
+
+@keyframes typing {
+    0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.45;
+    }
+    30% {
+        transform: translateY(-4px);
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 0 0 4px rgba(101, 229, 114, 0.12);
+    }
+    50% {
+        box-shadow: 0 0 0 7px rgba(101, 229, 114, 0.04);
+    }
+}
+
+@keyframes avatarFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-3px);
+    }
+}
+
+@keyframes softFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 991.98px) {
+
+    .ai-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .chat-card,
+    .providers-card {
+        height: auto;
+        min-height: 600px;
+    }
+
+    .providers-card {
+        min-height: 500px;
+    }
+}
+
+@media (max-width: 575.98px) {
+
+    .ai-page {
+        padding: 0.65rem;
+    }
+
+    .ai-layout {
+        gap: 0.75rem;
+    }
+
+    .message-bubble {
+        max-width: 92%;
+    }
+
+    .ai-header-subtitle {
+        display: none;
+    }
+
+    .ai-status {
+        font-size: 0;
+        padding: 8px;
+    }
+
+    .ai-status-dot {
+        margin: 0;
+    }
+
+    .footer-hint {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .provider-details {
+        grid-template-columns: 1fr;
+    }
+
+    .provider-detail.full {
+        grid-column: auto;
+    }
+}
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="ai-page">
+
+    <div class="ai-layout">
+
+        <!-- =====================================================
+             LEFT: AI CHAT
+        ====================================================== -->
+
+        <div class="ai-card chat-card">
+
+            <!-- Header -->
+            <div class="ai-header">
+
+                <div class="ai-header-content">
+
+                    <div class="ai-avatar">
+                        🤖
+                    </div>
+
+                    <div>
+                        <h6 class="ai-header-title">
+                            AI Home Advisor
+                        </h6>
+
+                        <span class="ai-header-subtitle">
+                            Powered by RAG • Real provider recommendations
+                        </span>
+                    </div>
+
+                    <div class="ai-status">
+                        <span class="ai-status-dot"></span>
+                        Online
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Messages -->
+            <div
+                class="messages-area"
+                id="messagesContainer"
+            >
+
+                <!-- Welcome -->
+                <div
+                    class="d-flex mb-3 welcome-message"
+                    id="welcomeMsg"
+                >
+
+                    <div class="message-bubble assistant">
+
+                        <strong>
+                            👋 Hello! I'm your AI Home Advisor.
+                        </strong>
+
+                        <p class="mb-2 mt-1">
+                            I can help you find the right professional
+                            for any home problem. Just tell me what's happening!
+                        </p>
+
+                        <p class="mb-1 small text-muted">
+                            Try asking:
+                        </p>
+
+                        <ul class="small text-muted mb-0">
+
+                            <li>
+                                My kitchen sink is leaking from below
+                            </li>
+
+                            <li>
+                                The electrical switch is making a sparking sound
+                            </li>
+
+                            <li>
+                                My AC is running but not cooling
+                            </li>
+
+                            <li>
+                                My washing machine stopped mid-cycle
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Input -->
+            <div class="chat-footer">
+
+                <!-- Location -->
+                <div class="location-input">
+
+                    <div class="input-group input-group-sm">
+
+                        <span class="input-group-text">
+                            <i class="bi bi-geo-alt text-primary"></i>
+                        </span>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="locationInput"
+                            placeholder="Your location (e.g., Bahria Town Phase 4)"
+                            value="{{ user_location }}"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- Problem -->
+                <div class="problem-input-group">
+
+                    <textarea
+                        class="form-control problem-input"
+                        id="problemInput"
+                        rows="2"
+                        placeholder="Describe your home problem in detail..."
+                    ></textarea>
+
+                    <button
+                        class="btn btn-primary send-button"
+                        id="sendBtn"
+                        onclick="sendMessage()"
+                        title="Send message"
+                    >
+                        <i class="bi bi-send-fill"></i>
+                    </button>
+
+                </div>
+
+
+                <!-- Footer information -->
+                <div class="footer-hint">
+
+                    <small>
+                        <i class="bi bi-keyboard me-1"></i>
+                        Ctrl + Enter to send
+                    </small>
+
+                    <small>
+                        <i class="bi bi-shield-check me-1"></i>
+                        AI assessment only — not a professional inspection
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             RIGHT: PROVIDERS
+        ====================================================== -->
+
+        <div class="ai-card providers-card">
+
+            <!-- Provider Header -->
+            <div class="providers-header">
+
+                <div class="providers-title-row">
+
+                    <div class="providers-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+
+                    <div>
+
+                        <h6 class="providers-title">
+                            Recommended Providers
+                        </h6>
+
+                        <p class="providers-subtitle">
+                            AI-ranked professionals based on your problem
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Providers -->
+            <div
+                class="providers-area"
+                id="providersPanel"
+            >
+
+                <div
+                    class="empty-providers"
+                    id="noProvidersMsg"
+                >
+
+                    <div>
+
+                        <div class="empty-provider-icon">
+                            <i class="bi bi-search"></i>
+                        </div>
+
+                        <h6 class="fw-semibold mb-2">
+                            Find the right professional
+                        </h6>
+
+                        <p class="text-muted small mb-0">
+                            Describe your home problem and the AI
+                            will recommend the most suitable providers here.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script>
+
+const CSRF_TOKEN = '{{ csrf_token }}';
+const ASK_URL = '{% url "ai_assistant:ask_ai" %}';
+
+let conversationId = null;
+
+
+// =========================================================
+// URL PARAMETERS
+// =========================================================
+
+const urlParams = new URLSearchParams(window.location.search);
+
+if (urlParams.get('problem')) {
+
+    document.getElementById('problemInput').value =
+        urlParams.get('problem');
+
+    if (urlParams.get('location')) {
+
+        document.getElementById('locationInput').value =
+            urlParams.get('location');
+
+    }
+
+    setTimeout(sendMessage, 500);
+}
+
+
+// =========================================================
+// CTRL + ENTER
+// =========================================================
+
+document
+    .getElementById('problemInput')
+    .addEventListener('keydown', function(e) {
+
+        if (e.ctrlKey && e.key === 'Enter') {
+            sendMessage();
+        }
+
+    });
+
+
+// =========================================================
+// SEND MESSAGE
+// =========================================================
+
+function sendMessage() {
+
+    const problem =
+        document.getElementById('problemInput').value.trim();
+
+    const location =
+        document.getElementById('locationInput').value.trim();
+
+
+    if (!problem || problem.length < 10) {
+
+        showAlert(
+            'Please describe your problem in at least 10 characters.',
+            'warning'
+        );
+
+        return;
+    }
+
+
+    appendMessage('user', problem);
+
+    document.getElementById('problemInput').value = '';
+
+    showTyping();
+
+    document.getElementById('sendBtn').disabled = true;
+
+
+    fetch(ASK_URL, {
+
+        method: 'POST',
+
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': CSRF_TOKEN,
+        },
+
+        body: JSON.stringify({
+            problem,
+            location,
+            conversation_id: conversationId
+        }),
+
+    })
+
+    .then(r => r.json())
+
+    .then(data => {
+
+        removeTyping();
+
+        document.getElementById('sendBtn').disabled = false;
+
+
+        if (data.error) {
+
+            showAlert(
+                data.error,
+                'danger'
+            );
+
+            return;
+        }
+
+
+        conversationId = data.conversation_id;
+
+
+        // Safety warning
+        if (
+            data.is_dangerous &&
+            data.safety_warning
+        ) {
+
+            appendSafetyWarning(
+                data.safety_warning
+            );
+
+        }
+
+
+        // AI response
+        appendMessage(
+            'assistant',
+            data.ai_response
+        );
+
+
+        // Provider cards
+        if (
+            data.providers &&
+            data.providers.length > 0
+        ) {
+
+            renderProviders(
+                data.providers,
+                data.detected_category
+            );
+
+        }
+
+
+        scrollToBottom();
+
+    })
+
+    .catch(err => {
+
+        removeTyping();
+
+        document.getElementById('sendBtn').disabled = false;
+
+        showAlert(
+            'Connection error. Please try again.',
+            'danger'
+        );
+
+        console.error(err);
+
+    });
+
+}
+
+
+// =========================================================
+// MESSAGE
+// =========================================================
+
+function appendMessage(role, text) {
+
+    const container =
+        document.getElementById('messagesContainer');
+
+    const div =
+        document.createElement('div');
+
+
+    div.className =
+        `d-flex mb-3 ${
+            role === 'user'
+                ? 'justify-content-end'
+                : ''
+        }`;
+
+
+    const formatted = text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n/g, '<br>');
+
+
+    div.innerHTML = `
+        <div class="message-bubble ${role}">
+            ${formatted}
+        </div>
+    `;
+
+
+    container.appendChild(div);
+
+    scrollToBottom();
+}
+
+
+// =========================================================
+// SAFETY WARNING
+// =========================================================
+
+function appendSafetyWarning(text) {
+
+    const container =
+        document.getElementById('messagesContainer');
+
+    const div =
+        document.createElement('div');
+
+
+    div.innerHTML = `
+
+        <div
+            class="alert alert-danger d-flex align-items-start mb-3"
+            role="alert"
+        >
+
+            <span
+                style="font-size:1.5rem"
+                class="me-3"
+            >
+                ⚠️
+            </span>
+
+            <div>
+                <strong>Safety Warning</strong>
+                <br>
+                ${text}
+            </div>
+
+        </div>
+
+    `;
+
+
+    container.appendChild(div);
+}
+
+
+// =========================================================
+// TYPING INDICATOR
+// =========================================================
+
+function showTyping() {
+
+    const container =
+        document.getElementById('messagesContainer');
+
+
+    const div =
+        document.createElement('div');
+
+
+    div.id = 'typingIndicator';
+
+    div.className = 'd-flex mb-3';
+
+
+    div.innerHTML = `
+
+        <div class="message-bubble assistant">
+
+            <div class="typing-indicator">
+
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </div>
+
+            <small class="text-muted ms-2">
+                AI is analyzing your problem...
+            </small>
+
+        </div>
+
+    `;
+
+
+    container.appendChild(div);
+
+    scrollToBottom();
+}
+
+
+function removeTyping() {
+
+    const el =
+        document.getElementById('typingIndicator');
+
+    if (el) {
+        el.remove();
+    }
+
+}
+
+
+// =========================================================
+// PROVIDERS
+// =========================================================
+
+function renderProviders(providers, category) {
+
+    const panel =
+        document.getElementById('providersPanel');
+
+
+    document
+        .getElementById('noProvidersMsg')
+        ?.remove();
+
+
+    let html = `
+
+        <div class="mb-3">
+
+            <span class="badge bg-primary-subtle text-primary">
+
+                <i class="bi bi-stars me-1"></i>
+
+                ${
+                    category
+                        ? category.charAt(0).toUpperCase()
+                          + category.slice(1)
+                        : 'Home Service'
+                }
+
+                Professionals
+
+            </span>
+
+        </div>
+
+    `;
+
+
+    providers.forEach((p, i) => {
+
+        const stars =
+            '⭐'.repeat(
+                Math.round(p.rating)
+            )
+            +
+            '☆'.repeat(
+                5 - Math.round(p.rating)
+            );
+
+
+        const scorePercent =
+            Math.round(p.score * 100);
+
+
+        const skills =
+            p.skills
+                ? p.skills.slice(0, 3).join(', ')
+                : '';
+
+
+        const areas =
+            p.service_areas
+                ? p.service_areas.slice(0, 2).join(', ')
+                : p.base_location;
+
+
+        html += `
+
+            <div
+                class="provider-card"
+                style="animation-delay:${i * 80}ms"
+            >
+
+                <!-- Top -->
+                <div class="provider-top">
+
+                    <div class="d-flex align-items-center gap-2">
+
+                        <span class="provider-rank">
+                            #${i + 1}
+                        </span>
+
+                        <strong class="provider-name">
+                            ${p.business_name}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="provider-rating">
+
+                        <div class="stars">
+                            ${stars}
+                        </div>
+
+                        <span class="provider-rating-value">
+                            ${p.rating.toFixed(1)}/5
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Details -->
+                <div class="provider-details">
+
+                    <div class="provider-detail">
+
+                        <i class="bi bi-briefcase"></i>
+
+                        ${p.experience_years} yrs exp
+
+                    </div>
+
+
+                    <div class="provider-detail">
+
+                        <i class="bi bi-geo-alt"></i>
+
+                        ${areas}
+
+                    </div>
+
+
+                    <div class="provider-detail full">
+
+                        <i class="bi bi-currency-rupee"></i>
+
+                        ${p.charge_range || 'Contact for pricing'}
+
+                    </div>
+
+
+                    ${
+                        skills
+                        ? `
+                            <div class="provider-detail full">
+
+                                <i class="bi bi-tools"></i>
+
+                                ${skills}
+
+                            </div>
+                          `
+                        : ''
+                    }
+
+                </div>
+
+
+                <!-- Match Score -->
+                <div class="match-score">
+
+                    <div class="match-score-header">
+
+                        <span class="match-score-label">
+                            AI Match Score
+                        </span>
+
+                        <span class="match-score-value">
+                            ${scorePercent}%
+                        </span>
+
+                    </div>
+
+
+                    <div class="match-progress">
+
+                        <div
+                            class="match-progress-bar"
+                            style="width:${scorePercent}%"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Profile -->
+                <a
+                    href="/providers/${p.id}/"
+                    class="provider-button"
+                >
+
+                    <i class="bi bi-person me-1"></i>
+
+                    View Profile & Contact
+
+                </a>
+
+            </div>
+
+        `;
+
+    });
+
+
+    panel.innerHTML = html;
+}
+
+
+// =========================================================
+// SCROLL
+// =========================================================
+
+function scrollToBottom() {
+
+    const container =
+        document.getElementById(
+            'messagesContainer'
+        );
+
+    container.scrollTop =
+        container.scrollHeight;
+}
+
+
+// =========================================================
+// ALERT
+// =========================================================
+
+function showAlert(msg, type) {
+
+    const div =
+        document.createElement('div');
+
+
+    div.className =
+        `alert alert-${type} alert-dismissible fade show mt-2`;
+
+
+    div.innerHTML = `
+
+        ${msg}
+
+        <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+        ></button>
+
+    `;
+
+
+    document
+        .querySelector('.chat-footer')
+        .prepend(div);
+}
+
+</script>
+
+{% endblock %}
+

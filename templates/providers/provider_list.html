@@ -1,0 +1,864 @@
+{% extends 'base.html' %}
+
+{% block title %}Find Service Providers — AI HomeService{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* =========================
+       Provider Listing Page
+    ========================== */
+
+    .provider-list-page {
+        padding: 2rem 0 3rem;
+    }
+
+    /* Search Section */
+    .provider-search-card {
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+        animation: searchFadeIn 0.6s ease-out forwards;
+    }
+
+    .search-header {
+        padding: 1.3rem 1.5rem 0;
+    }
+
+    .search-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 0.25rem;
+    }
+
+    .search-subtitle {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
+    }
+
+    .search-body {
+        padding: 0 1.5rem 1.5rem;
+    }
+
+    .search-field {
+        border: 1px solid var(--border-color);
+        border-radius: 9px;
+        min-height: 44px;
+        transition: border-color 0.25s ease,
+                    box-shadow 0.25s ease,
+                    transform 0.25s ease;
+    }
+
+    .search-field:hover {
+        border-color: #b7c9bd;
+    }
+
+    .search-field:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .search-button {
+        min-height: 44px;
+        border-radius: 9px;
+        background: var(--primary);
+        border-color: var(--primary);
+        color: #fff;
+        font-weight: 600;
+        transition: all 0.25s ease;
+    }
+
+    .search-button:hover {
+        background: var(--primary-dark);
+        border-color: var(--primary-dark);
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 7px 18px rgba(0, 0, 0, 0.12);
+    }
+
+    /* Category Filters */
+    .category-filter-wrapper {
+        margin: 1.5rem 0 2rem;
+        animation: fadeInUp 0.6s ease-out 0.15s both;
+    }
+
+    .category-label {
+        display: block;
+        color: var(--text-dark);
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-bottom: 0.65rem;
+    }
+
+    .category-filter {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.5rem 0.85rem;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: all 0.25s ease;
+    }
+
+    .category-filter.btn-primary {
+        background: var(--primary);
+        border-color: var(--primary);
+    }
+
+    .category-filter.btn-primary:hover {
+        background: var(--primary-dark);
+        border-color: var(--primary-dark);
+        transform: translateY(-2px);
+    }
+
+    .category-filter.btn-outline-secondary {
+        color: var(--text-muted);
+        border-color: var(--border-color);
+        background: #fff;
+    }
+
+    .category-filter.btn-outline-secondary:hover {
+        color: var(--primary-dark);
+        border-color: var(--primary);
+        background: #f3faf6;
+        transform: translateY(-2px);
+    }
+
+    /* Results Header */
+    .results-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        animation: fadeInUp 0.6s ease-out 0.2s both;
+    }
+
+    .results-title {
+        color: var(--text-dark);
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .results-subtitle {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+    }
+
+    /* Provider Card */
+    .provider-card {
+        height: 100%;
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease,
+            border-color 0.3s ease;
+        opacity: 0;
+        animation: cardFadeIn 0.55s ease-out forwards;
+    }
+
+    .provider-card:hover {
+        transform: translateY(-7px);
+        border-color: rgba(25, 135, 84, 0.25);
+        box-shadow: 0 16px 35px rgba(0, 0, 0, 0.09);
+    }
+
+    .provider-card:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    .provider-card:nth-child(2) {
+        animation-delay: 0.18s;
+    }
+
+    .provider-card:nth-child(3) {
+        animation-delay: 0.26s;
+    }
+
+    .provider-card:nth-child(4) {
+        animation-delay: 0.34s;
+    }
+
+    .provider-card:nth-child(5) {
+        animation-delay: 0.42s;
+    }
+
+    .provider-card:nth-child(6) {
+        animation-delay: 0.50s;
+    }
+
+    .provider-card-body {
+        padding: 1.35rem;
+    }
+
+    /* Provider Header */
+    .provider-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.8rem;
+        margin-bottom: 1rem;
+    }
+
+    .provider-avatar {
+        width: 54px;
+        height: 54px;
+        min-width: 54px;
+        border-radius: 50%;
+        background: linear-gradient(
+            135deg,
+            var(--primary),
+            var(--primary-dark)
+        );
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        box-shadow: 0 5px 14px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .provider-card:hover .provider-avatar {
+        transform: scale(1.07) rotate(2deg);
+    }
+
+    .provider-main-info {
+        min-width: 0;
+        flex: 1;
+    }
+
+    .provider-name {
+        color: var(--text-dark);
+        font-size: 0.98rem;
+        font-weight: 700;
+        margin: 0 0 0.35rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .provider-category {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.3rem 0.6rem;
+        border-radius: 999px;
+        background: #eaf7ef;
+        color: var(--primary-dark);
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+
+    .verified-badge {
+        flex-shrink: 0;
+        font-size: 0.68rem;
+        border-radius: 999px;
+        padding: 0.35rem 0.55rem;
+    }
+
+    /* Rating */
+    .provider-rating {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .stars {
+        color: #f4b400;
+        letter-spacing: 1px;
+        font-size: 0.9rem;
+    }
+
+    .rating-value {
+        color: var(--text-dark);
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+
+    .review-count {
+        color: var(--text-muted);
+        font-size: 0.75rem;
+    }
+
+    /* Provider Details */
+    .provider-details {
+        padding: 0.9rem 0;
+        border-top: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .provider-detail {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .provider-detail:last-child {
+        margin-bottom: 0;
+    }
+
+    .provider-detail i {
+        color: var(--primary);
+        width: 16px;
+        text-align: center;
+    }
+
+    /* Skills */
+    .skills-wrapper {
+        margin: 0.9rem 0 1rem;
+        min-height: 29px;
+    }
+
+    .skill-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.3rem 0.55rem;
+        margin: 0 0.25rem 0.25rem 0;
+        border-radius: 6px;
+        background: var(--bg-light);
+        color: var(--text-muted);
+        border: 1px solid var(--border-color);
+        font-size: 0.68rem;
+        transition: all 0.2s ease;
+    }
+
+    .skill-badge:hover {
+        background: #eaf7ef;
+        color: var(--primary-dark);
+        border-color: rgba(25, 135, 84, 0.2);
+    }
+
+    /* Profile Button */
+    .view-profile-btn {
+        border-radius: 9px;
+        padding: 0.6rem 1rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--primary);
+        border-color: var(--primary);
+        transition: all 0.25s ease;
+    }
+
+    .view-profile-btn:hover {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Empty State */
+    .empty-state {
+        padding: 4rem 1rem;
+        text-align: center;
+        background: #fff;
+        border: 1px dashed var(--border-color);
+        border-radius: var(--radius-lg);
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .empty-icon {
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 1rem;
+        border-radius: 50%;
+        background: #f3faf6;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+    }
+
+    .empty-title {
+        color: var(--text-dark);
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin-bottom: 0.4rem;
+    }
+
+    .empty-text {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        margin-bottom: 0;
+    }
+
+    .empty-text a {
+        color: var(--primary);
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .empty-text a:hover {
+        text-decoration: underline;
+    }
+
+    /* Animations */
+    @keyframes searchFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-15px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(18px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes cardFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(22px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive */
+    @media (max-width: 767.98px) {
+        .provider-list-page {
+            padding: 1rem 0 2rem;
+        }
+
+        .search-header {
+            padding: 1.1rem 1rem 0;
+        }
+
+        .search-body {
+            padding: 0 1rem 1rem;
+        }
+
+        .category-filter-wrapper {
+            margin: 1.2rem 0 1.5rem;
+        }
+
+        .results-heading {
+            display: block;
+        }
+
+        .results-subtitle {
+            display: block;
+            margin-top: 0.25rem;
+        }
+
+        .provider-card-body {
+            padding: 1.15rem;
+        }
+    }
+
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+        .provider-search-card,
+        .category-filter-wrapper,
+        .results-heading,
+        .provider-card,
+        .empty-state {
+            animation: none;
+            opacity: 1;
+        }
+
+        .provider-card,
+        .provider-avatar,
+        .search-field,
+        .search-button,
+        .category-filter,
+        .view-profile-btn,
+        .skill-badge {
+            transition: none;
+        }
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container provider-list-page">
+
+    <!-- Search Section -->
+
+    <div class="provider-search-card mb-4">
+
+        <div class="search-header">
+
+            <h1 class="search-title">
+                <i class="bi bi-search me-2 text-success"></i>
+                Find the Right Service Provider
+            </h1>
+
+            <p class="search-subtitle">
+                Search by provider name, skill, location, or service category.
+            </p>
+
+        </div>
+
+
+        <div class="search-body">
+
+            <form method="get" class="row g-2 align-items-end">
+
+                <div class="col-md-4">
+
+                    <label class="form-label small fw-semibold">
+                        Search
+                    </label>
+
+                    <input
+                        type="text"
+                        name="q"
+                        class="form-control search-field"
+                        placeholder="Search providers, skills..."
+                        value="{{ search }}"
+                    >
+
+                </div>
+
+
+                <div class="col-md-3">
+
+                    <label class="form-label small fw-semibold">
+                        Location
+                    </label>
+
+                    <input
+                        type="text"
+                        name="location"
+                        class="form-control search-field"
+                        placeholder="e.g. Multan"
+                        value="{{ location }}"
+                    >
+
+                </div>
+
+
+                <div class="col-md-3">
+
+                    <label class="form-label small fw-semibold">
+                        Category
+                    </label>
+
+                    <select
+                        name="category"
+                        class="form-select search-field"
+                    >
+
+                        <option value="">
+                            All Categories
+                        </option>
+
+                        {% for cat in categories %}
+
+                        <option
+                            value="{{ cat.slug }}"
+                            {% if selected_category == cat.slug %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ cat.icon }} {{ cat.name }}
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <div class="col-md-2">
+
+                    <button
+                        type="submit"
+                        class="btn search-button w-100"
+                    >
+                        <i class="bi bi-search me-1"></i>
+                        Search
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- Category Filters -->
+
+    <div class="category-filter-wrapper">
+
+        <span class="category-label">
+            Browse by Category
+        </span>
+
+        <div class="d-flex flex-wrap gap-2">
+
+            <a
+                href="{% url 'providers:provider_list' %}"
+                class="btn btn-sm category-filter
+                {% if not selected_category %}
+                    btn-primary
+                {% else %}
+                    btn-outline-secondary
+                {% endif %}"
+            >
+                <i class="bi bi-grid me-1"></i>
+                All
+            </a>
+
+
+            {% for cat in categories %}
+
+            <a
+                href="?category={{ cat.slug }}"
+                class="btn btn-sm category-filter
+                {% if selected_category == cat.slug %}
+                    btn-primary
+                {% else %}
+                    btn-outline-secondary
+                {% endif %}"
+            >
+                {{ cat.icon }}
+                {{ cat.name }}
+            </a>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+
+    <!-- Results Heading -->
+
+    <div class="results-heading">
+
+        <h2 class="results-title">
+            Service Providers
+        </h2>
+
+        {% if providers %}
+        <span class="results-subtitle">
+            Find a professional that matches your needs
+        </span>
+        {% endif %}
+
+    </div>
+
+
+    <!-- Results -->
+
+    <div class="row g-4">
+
+        {% for provider in providers %}
+
+        <div class="col-md-6 col-lg-4">
+
+            <div class="provider-card">
+
+                <div class="provider-card-body">
+
+                    <!-- Provider Header -->
+
+                    <div class="provider-header">
+
+                        <div class="provider-avatar">
+                            {{ provider.category.icon|default:"🔧" }}
+                        </div>
+
+
+                        <div class="provider-main-info">
+
+                            <h3 class="provider-name">
+                                {{ provider.business_name }}
+                            </h3>
+
+                            <span class="provider-category">
+                                {{ provider.category.name }}
+                            </span>
+
+                        </div>
+
+
+                        {% if provider.is_verified %}
+
+                        <span
+                            class="badge bg-success verified-badge"
+                            title="Verified Provider"
+                        >
+                            <i class="bi bi-patch-check-fill me-1"></i>
+                            Verified
+                        </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Rating -->
+
+                    <div class="provider-rating">
+
+                        <span class="stars">
+
+                            {% for i in "12345" %}
+
+                                {% if forloop.counter <= provider.average_rating %}
+                                    ★
+                                {% else %}
+                                    ☆
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </span>
+
+                        <span class="rating-value">
+                            {{ provider.average_rating }}
+                        </span>
+
+                        <span class="review-count">
+                            ({{ provider.total_reviews }})
+                        </span>
+
+                    </div>
+
+
+                    <!-- Provider Details -->
+
+                    <div class="provider-details">
+
+                        <div class="provider-detail">
+
+                            <i class="bi bi-geo-alt-fill"></i>
+
+                            <span>
+                                {{ provider.base_location }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="provider-detail">
+
+                            <i class="bi bi-briefcase-fill"></i>
+
+                            <span>
+                                {{ provider.experience_years }}
+                                years experience
+                            </span>
+
+                        </div>
+
+
+                        <div class="provider-detail">
+
+                            <i class="bi bi-currency-rupee"></i>
+
+                            <span>
+                                {{ provider.get_charge_range }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Skills -->
+
+                    {% if provider.get_skills_list %}
+
+                    <div class="skills-wrapper">
+
+                        {% for skill in provider.get_skills_list|slice:":3" %}
+
+                        <span class="skill-badge">
+                            {{ skill }}
+                        </span>
+
+                        {% endfor %}
+
+                    </div>
+
+                    {% endif %}
+
+
+                    <!-- View Profile -->
+
+                    <a
+                        href="{% url 'providers:provider_detail' provider.pk %}"
+                        class="btn btn-outline-primary view-profile-btn w-100"
+                    >
+                        <i class="bi bi-person-lines-fill me-1"></i>
+                        View Profile
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {% empty %}
+
+        <!-- Empty State -->
+
+        <div class="col-12">
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    <i class="bi bi-search"></i>
+                </div>
+
+                <h3 class="empty-title">
+                    No providers found
+                </h3>
+
+                <p class="empty-text">
+                    Try different search terms or
+                    <a href="{% url 'ai_assistant:chat' %}">
+                        ask our AI
+                    </a>
+                    for recommendations.
+                </p>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

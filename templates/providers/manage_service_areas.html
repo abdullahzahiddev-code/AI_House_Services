@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Manage Service Areas — AI HomeService{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card shadow">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-geo-alt me-2"></i>Service Areas</h5>
+                    <a href="{% url 'providers:dashboard' %}" class="btn btn-sm btn-outline-secondary">← Dashboard</a>
+                </div>
+                <div class="card-body">
+                    <!-- Add Area Form -->
+                    <form method="post" class="mb-4">
+                        {% csrf_token %}
+                        <h6>Add New Area</h6>
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <input type="text" name="area_name" class="form-control" placeholder="Area name (e.g., Bahria Phase 4)" required>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" name="city" class="form-control" placeholder="City" value="Rawalpindi">
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary w-100">Add</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Current Areas -->
+                    <h6>Current Service Areas ({{ areas.count }})</h6>
+                    {% if areas %}
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for area in areas %}
+                        <span class="badge bg-light text-dark border d-flex align-items-center gap-2 p-2">
+                            📍 {{ area.area_name }}, {{ area.city }}
+                            <a href="{% url 'providers:delete_service_area' area.pk %}" class="text-danger text-decoration-none ms-1" onclick="return confirm('Remove this area?')">×</a>
+                        </span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No service areas added yet. Add areas to help customers find you.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

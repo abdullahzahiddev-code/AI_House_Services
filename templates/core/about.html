@@ -1,0 +1,648 @@
+```html
+{% extends 'base.html' %}
+
+{% block title %}About — AI HomeService{% endblock %}
+
+
+{% block extra_css %}
+<style>
+
+    /* =========================================================
+       ABOUT PAGE
+       ========================================================= */
+
+    .about-page {
+        min-height: calc(100vh - 100px);
+    }
+
+
+    /* =========================================================
+       HERO SECTION
+       ========================================================= */
+
+    .about-hero {
+        position: relative;
+        overflow: hidden;
+
+        padding: 55px 30px;
+
+        border-radius: var(--radius-lg);
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--primary),
+                var(--primary-dark)
+            );
+
+        color: #fff;
+
+        box-shadow: 0 5px 18px rgba(41, 37, 36, 0.12);
+
+        animation: heroFadeIn 0.7s ease-out forwards;
+    }
+
+    .about-hero::before {
+        content: "";
+        position: absolute;
+
+        width: 220px;
+        height: 220px;
+
+        border-radius: 50%;
+
+        background: rgba(255, 255, 255, 0.06);
+
+        top: -100px;
+        right: -70px;
+    }
+
+    .about-hero::after {
+        content: "";
+        position: absolute;
+
+        width: 160px;
+        height: 160px;
+
+        border-radius: 50%;
+
+        background: rgba(255, 255, 255, 0.05);
+
+        bottom: -90px;
+        left: -60px;
+    }
+
+    .about-hero-content {
+        position: relative;
+        z-index: 1;
+    }
+
+
+    /* =========================================================
+       HERO ICON
+       ========================================================= */
+
+    .about-hero-icon {
+        width: 68px;
+        height: 68px;
+
+        margin: 0 auto 20px;
+
+        border-radius: 20px;
+
+        background: rgba(255, 255, 255, 0.14);
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 1.8rem;
+
+        animation: iconFloat 3s ease-in-out infinite;
+    }
+
+    .about-hero h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+    .about-hero p {
+        max-width: 680px;
+        margin: 0 auto;
+
+        line-height: 1.7;
+        font-size: 1rem;
+
+        color: rgba(255, 255, 255, 0.88);
+    }
+
+
+    /* =========================================================
+       FEATURE SECTION
+       ========================================================= */
+
+    .features-section {
+        margin-top: 38px;
+    }
+
+    .feature-card {
+        height: 100%;
+
+        padding: 26px;
+
+        background: #fff;
+
+        border: 1px solid var(--border-color);
+
+        border-radius: var(--radius-lg);
+
+        box-shadow: 0 2px 7px rgba(41, 37, 36, 0.06);
+
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease,
+            border-color 0.25s ease;
+
+        animation: cardFadeIn 0.6s ease-out both;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+
+        box-shadow:
+            0 8px 20px rgba(41, 37, 36, 0.10);
+
+        border-color: rgba(67, 93, 58, 0.25);
+    }
+
+
+    /* =========================================================
+       STAGGERED CARD ANIMATIONS
+       ========================================================= */
+
+    .feature-card:nth-child(1) {
+        animation-delay: 0.15s;
+    }
+
+    .feature-card:nth-child(2) {
+        animation-delay: 0.25s;
+    }
+
+    .feature-card:nth-child(3) {
+        animation-delay: 0.35s;
+    }
+
+    .feature-card:nth-child(4) {
+        animation-delay: 0.45s;
+    }
+
+
+    /* =========================================================
+       FEATURE ICON
+       ========================================================= */
+
+    .feature-icon {
+        width: 48px;
+        height: 48px;
+
+        margin-bottom: 18px;
+
+        border-radius: 14px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #eef3ec;
+        color: var(--primary);
+
+        font-size: 1.25rem;
+
+        transition:
+            transform 0.25s ease,
+            background-color 0.25s ease;
+    }
+
+    .feature-card:hover .feature-icon {
+        transform: scale(1.08);
+
+        background: #e2ebdf;
+    }
+
+
+    /* =========================================================
+       FEATURE TEXT
+       ========================================================= */
+
+    .feature-card h5 {
+        margin-bottom: 10px;
+
+        color: var(--text-dark);
+
+        font-size: 1rem;
+        font-weight: 700;
+    }
+
+    .feature-card p {
+        margin-bottom: 0;
+
+        color: var(--text-muted);
+
+        font-size: 0.88rem;
+
+        line-height: 1.7;
+    }
+
+
+    /* =========================================================
+       TECHNOLOGY BADGES
+       ========================================================= */
+
+    .tech-list {
+        display: flex;
+        flex-wrap: wrap;
+
+        gap: 8px;
+
+        margin-top: 16px;
+    }
+
+    .tech-badge {
+        display: inline-flex;
+        align-items: center;
+
+        padding: 5px 10px;
+
+        border-radius: 999px;
+
+        background: var(--bg-light);
+
+        color: var(--text-muted);
+
+        font-size: 0.72rem;
+        font-weight: 600;
+
+        border: 1px solid var(--border-color);
+    }
+
+
+    /* =========================================================
+       SECTION TITLE
+       ========================================================= */
+
+    .features-title {
+        margin-bottom: 22px;
+
+        text-align: center;
+    }
+
+    .features-title h5 {
+        font-weight: 700;
+        color: var(--text-dark);
+    }
+
+    .features-title p {
+        margin-bottom: 0;
+
+        color: var(--text-muted);
+        font-size: 0.85rem;
+    }
+
+
+    /* =========================================================
+       ANIMATIONS
+       ========================================================= */
+
+    @keyframes heroFadeIn {
+
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    }
+
+
+    @keyframes cardFadeIn {
+
+        from {
+            opacity: 0;
+            transform: translateY(18px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    }
+
+
+    @keyframes iconFloat {
+
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-5px);
+        }
+
+    }
+
+
+    /* =========================================================
+       RESPONSIVE DESIGN
+       ========================================================= */
+
+    @media (max-width: 767px) {
+
+        .about-hero {
+            padding: 40px 20px;
+        }
+
+        .about-hero h2 {
+            font-size: 1.65rem;
+        }
+
+        .about-hero p {
+            font-size: 0.9rem;
+        }
+
+        .feature-card {
+            padding: 22px;
+        }
+
+    }
+
+
+    /* =========================================================
+       REDUCED MOTION
+       ========================================================= */
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .about-hero,
+        .feature-card {
+            animation: none;
+        }
+
+        .about-hero-icon {
+            animation: none;
+        }
+
+        .feature-card,
+        .feature-icon {
+            transition: none;
+        }
+
+    }
+
+</style>
+{% endblock %}
+
+
+
+{% block content %}
+
+<div class="container py-5 about-page">
+
+    <!-- =====================================================
+         HERO
+         ===================================================== -->
+
+    <div class="about-hero text-center">
+
+        <div class="about-hero-content">
+
+            <div class="about-hero-icon">
+
+                <i class="bi bi-house-heart-fill"></i>
+
+            </div>
+
+            <h2>
+                About AI HomeService
+            </h2>
+
+            <p>
+                An AI-powered home service recommendation platform
+                that understands your household problem and connects
+                you with the right professional.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         FEATURES
+         ===================================================== -->
+
+    <div class="features-section">
+
+        <div class="features-title">
+
+            <h5>
+                What Makes Our Platform Different?
+            </h5>
+
+            <p>
+                Smart technology designed to make finding home services easier.
+            </p>
+
+        </div>
+
+
+        <div class="row g-4">
+
+
+            <!-- =================================================
+                 RAG AI
+                 ================================================= -->
+
+            <div class="col-md-6">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+
+                        <i class="bi bi-robot"></i>
+
+                    </div>
+
+                    <h5>
+                        RAG AI Technology
+                    </h5>
+
+                    <p>
+                        Our platform uses Retrieval-Augmented Generation
+                        (RAG) to understand your problem, retrieve relevant
+                        knowledge and verified provider data, and generate
+                        personalized recommendations.
+                    </p>
+
+                    <div class="tech-list">
+
+                        <span class="tech-badge">
+                            RAG
+                        </span>
+
+                        <span class="tech-badge">
+                            AI
+                        </span>
+
+                        <span class="tech-badge">
+                            Smart Retrieval
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 SMART MATCHING
+                 ================================================= -->
+
+            <div class="col-md-6">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+
+                        <i class="bi bi-search-heart"></i>
+
+                    </div>
+
+                    <h5>
+                        Smart Matching
+                    </h5>
+
+                    <p>
+                        Providers are ranked using a hybrid scoring
+                        algorithm considering service match, location,
+                        skills, rating, experience, and availability.
+                    </p>
+
+                    <div class="tech-list">
+
+                        <span class="tech-badge">
+                            Service Match
+                        </span>
+
+                        <span class="tech-badge">
+                            Location
+                        </span>
+
+                        <span class="tech-badge">
+                            Rating
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 VERIFIED PROFESSIONALS
+                 ================================================= -->
+
+            <div class="col-md-6">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+
+                        <i class="bi bi-patch-check-fill"></i>
+
+                    </div>
+
+                    <h5>
+                        Verified Professionals
+                    </h5>
+
+                    <p>
+                        All service providers are manually verified
+                        by our admin team before being listed on
+                        the platform.
+                    </p>
+
+                    <div class="tech-list">
+
+                        <span class="tech-badge">
+                            Verified
+                        </span>
+
+                        <span class="tech-badge">
+                            Trusted
+                        </span>
+
+                        <span class="tech-badge">
+                            Professional
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 TECHNOLOGY STACK
+                 ================================================= -->
+
+            <div class="col-md-6">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+
+                        <i class="bi bi-code-slash"></i>
+
+                    </div>
+
+                    <h5>
+                        Built with Modern Technology
+                    </h5>
+
+                    <p>
+                        The platform is built using a modern technology
+                        stack designed for AI-powered recommendations,
+                        backend services, data retrieval, and scalable
+                        web development.
+                    </p>
+
+                    <div class="tech-list">
+
+                        <span class="tech-badge">
+                            Python
+                        </span>
+
+                        <span class="tech-badge">
+                            Django
+                        </span>
+
+                        <span class="tech-badge">
+                            DRF
+                        </span>
+
+                        <span class="tech-badge">
+                            ChromaDB
+                        </span>
+
+                        <span class="tech-badge">
+                            Sentence-Transformers
+                        </span>
+
+                        <span class="tech-badge">
+                            OpenAI
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+```

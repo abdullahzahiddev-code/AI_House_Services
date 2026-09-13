@@ -1,0 +1,852 @@
+```html
+{% extends 'base.html' %}
+{% block title %}Provider Dashboard — AI HomeService{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* =========================================================
+       PROFILE CARD
+       ========================================================= */
+
+    .profile-card {
+        background: #fff;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(41, 37, 36, 0.08);
+    }
+
+    .profile-banner {
+        height: 72px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    }
+
+    .profile-avatar {
+        width: 76px;
+        height: 76px;
+        margin-top: -38px;
+        font-size: 1.8rem;
+        background: #fff;
+        color: var(--primary);
+        border: 4px solid #fff;
+        box-shadow: 0 2px 8px rgba(41, 37, 36, 0.15);
+    }
+
+    .profile-body {
+        padding: 0 var(--space-4) var(--space-4);
+        text-align: center;
+    }
+
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 600;
+    }
+
+    .status-pill.verified {
+        background: #dceedb;
+        color: #275624;
+    }
+
+    .status-pill.pending {
+        background: #f7e9c9;
+        color: #7a5c05;
+    }
+
+
+    /* =========================================================
+       SIDEBAR NAVIGATION
+       ========================================================= */
+
+    .dash-nav .nav-link {
+        position: relative;
+        color: var(--text-muted);
+        padding: 10px 16px 10px 20px;
+        border-radius: var(--radius-sm);
+        font-size: 0.92rem;
+        transition:
+            background-color 0.2s ease,
+            color 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .dash-nav .nav-link i {
+        width: 18px;
+        color: var(--text-muted);
+        transition: color 0.2s ease;
+    }
+
+    .dash-nav .nav-link:hover {
+        background: var(--bg-light);
+        transform: translateX(3px);
+    }
+
+    .dash-nav .nav-link.active {
+        background: #eef3ec;
+        color: var(--primary);
+        font-weight: 600;
+    }
+
+    .dash-nav .nav-link.active i {
+        color: var(--primary);
+    }
+
+    .dash-nav .nav-link.active::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 6px;
+        bottom: 6px;
+        width: 3px;
+        background: var(--primary);
+        border-radius: 2px;
+    }
+
+
+    /* =========================================================
+       AVAILABILITY PILL
+       ========================================================= */
+
+    .availability-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 16px;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        background: #fff;
+        border: 1px solid var(--border-color);
+    }
+
+    .availability-pill .dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+    }
+
+    .availability-pill.on .dot {
+        background: var(--success);
+    }
+
+    .availability-pill.off .dot {
+        background: var(--danger);
+    }
+
+
+    /* =========================================================
+       STATS BAR
+       ========================================================= */
+
+    .stats-bar {
+        background: #fff;
+        border-radius: var(--radius-lg);
+        box-shadow: 0 1px 3px rgba(41, 37, 36, 0.08);
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .stat-section {
+        flex: 1 1 0;
+        min-width: 140px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: var(--space-4);
+        border-right: 1px solid var(--border-color);
+    }
+
+    .stat-section:last-child {
+        border-right: none;
+    }
+
+    .stat-icon-circle {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.05rem;
+        flex-shrink: 0;
+    }
+
+    .stat-icon-circle.tone-accent {
+        background: #fbe6d8;
+        color: var(--accent);
+    }
+
+    .stat-icon-circle.tone-secondary {
+        background: #efe9e0;
+        color: var(--secondary);
+    }
+
+    .stat-icon-circle.tone-primary {
+        background: #dfeade;
+        color: var(--primary);
+    }
+
+    .stat-icon-circle.tone-success {
+        background: #dceedb;
+        color: var(--success);
+    }
+
+    .stat-value {
+        font-size: 1.35rem;
+        font-weight: 700;
+        line-height: 1.1;
+        color: var(--text-dark);
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+    }
+
+
+    /* =========================================================
+       REQUESTS TABLE
+       ========================================================= */
+
+    .customer-chip {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: var(--bg-light);
+        color: var(--text-dark);
+        font-size: 0.78rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 8px;
+        flex-shrink: 0;
+    }
+
+    .req-table thead th {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        font-weight: 600;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 10px;
+    }
+
+    .req-table td {
+        vertical-align: middle;
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+
+
+    /* =========================================================
+       REVIEWS
+       ========================================================= */
+
+    .review-row + .review-row {
+        border-top: 1px solid var(--border-color);
+        padding-top: var(--space-3);
+        margin-top: var(--space-3);
+    }
+
+    .review-comment {
+        font-style: italic;
+        color: var(--text-dark);
+    }
+
+    .reviewer-avatar {
+        width: 36px;
+        height: 36px;
+        background: var(--secondary);
+        flex-shrink: 0;
+    }
+
+    .empty-state i {
+        font-size: 2.2rem;
+        color: var(--border-color);
+    }
+
+
+    /* =========================================================
+       SECTION CARDS
+       ========================================================= */
+
+    .section-card {
+        background: #fff;
+        border-radius: var(--radius-lg);
+        box-shadow: 0 1px 3px rgba(41, 37, 36, 0.08);
+    }
+
+    .section-card .section-header {
+        padding: var(--space-3) var(--space-4);
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+
+    /* =========================================================
+       PROFESSIONAL PAGE LOAD ANIMATION
+       ========================================================= */
+
+    .animate-fade-in-up {
+        opacity: 0;
+        transform: translateY(18px);
+        animation: fadeInUp 0.6s ease-out forwards;
+    }
+
+    /*
+       First animation starts immediately.
+       Other sections use data-delay values.
+    */
+
+    .animate-fade-in-up[data-delay="1"] {
+        animation-delay: 0.1s;
+    }
+
+    .animate-fade-in-up[data-delay="2"] {
+        animation-delay: 0.2s;
+    }
+
+    .animate-fade-in-up[data-delay="3"] {
+        animation-delay: 0.3s;
+    }
+
+    /* Main animation definition */
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(18px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+
+    /* =========================================================
+       CARD HOVER ANIMATION
+       ========================================================= */
+
+    .profile-card,
+    .stats-bar,
+    .section-card {
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease;
+    }
+
+    .profile-card:hover,
+    .stats-bar:hover,
+    .section-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(41, 37, 36, 0.10);
+    }
+
+
+    /* =========================================================
+       BUTTON HOVER ANIMATION
+       ========================================================= */
+
+    .btn {
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+    }
+
+
+    /* =========================================================
+       MOBILE RESPONSIVE
+       ========================================================= */
+
+    @media (max-width: 767px) {
+
+        .stat-section {
+            border-right: none;
+            border-bottom: 1px solid var(--border-color);
+            flex: 1 1 50%;
+        }
+
+        .stat-section:last-child {
+            border-bottom: none;
+        }
+    }
+
+
+    /* =========================================================
+       REDUCED MOTION
+       Accessibility:
+       Users who disable animations will not see movement.
+       ========================================================= */
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .animate-fade-in-up {
+            opacity: 1;
+            transform: none;
+            animation: none;
+        }
+
+        .profile-card,
+        .stats-bar,
+        .section-card,
+        .btn,
+        .dash-nav .nav-link {
+            transition: none;
+        }
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="row g-4">
+
+        <!-- =====================================================
+             SIDEBAR
+             ===================================================== -->
+
+        <div class="col-md-3">
+
+            <div class="profile-card animate-fade-in-up">
+
+                <div class="profile-banner"></div>
+
+                <div class="profile-body">
+
+                    <div class="profile-avatar rounded-circle d-inline-flex align-items-center justify-content-center mb-2">
+
+                        {% if profile.category.icon %}
+                            {{ profile.category.icon }}
+                        {% else %}
+                            <i class="bi bi-tools"></i>
+                        {% endif %}
+
+                    </div>
+
+                    <h6 class="mb-1">
+                        {{ profile.business_name }}
+                    </h6>
+
+                    <small class="text-muted d-block mb-2">
+                        {{ profile.category.name }}
+                    </small>
+
+                    {% if profile.is_verified %}
+
+                        <span class="status-pill verified">
+                            <i class="bi bi-patch-check-fill"></i>
+                            Verified
+                        </span>
+
+                    {% else %}
+
+                        <span class="status-pill pending">
+                            <i class="bi bi-hourglass-split"></i>
+                            Pending Verification
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+                <hr class="m-0" style="border-color: var(--border-color);">
+
+                <nav class="nav flex-column gap-1 dash-nav p-3">
+
+                    <a class="nav-link active"
+                       href="{% url 'providers:dashboard' %}">
+                        <i class="bi bi-speedometer2 me-2"></i>
+                        Dashboard
+                    </a>
+
+                    <a class="nav-link"
+                       href="{% url 'providers:setup_profile' %}">
+                        <i class="bi bi-person-gear me-2"></i>
+                        Edit Profile
+                    </a>
+
+                    <a class="nav-link"
+                       href="{% url 'providers:manage_service_areas' %}">
+                        <i class="bi bi-geo-alt me-2"></i>
+                        Service Areas
+                    </a>
+
+                    <a class="nav-link"
+                       href="{% url 'services:my_requests' %}">
+                        <i class="bi bi-list-check me-2"></i>
+                        Service Requests
+                    </a>
+
+                </nav>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             MAIN DASHBOARD
+             ===================================================== -->
+
+        <div class="col-md-9">
+
+            <!-- Dashboard Header -->
+
+            <div class="d-flex justify-content-between align-items-center mb-4 animate-fade-in-up">
+
+                <div>
+
+                    <h4 class="fw-bold mb-0">
+                        Welcome back
+                        {% if profile.business_name %}
+                            , {{ profile.business_name }}
+                        {% endif %}
+                    </h4>
+
+                    <small class="text-muted">
+                        Here's how your business is doing
+                    </small>
+
+                </div>
+
+                <span class="availability-pill {% if profile.is_available %}on{% else %}off{% endif %}">
+
+                    <span class="dot"></span>
+
+                    {% if profile.is_available %}
+                        Available
+                    {% else %}
+                        Unavailable
+                    {% endif %}
+
+                </span>
+
+            </div>
+
+
+            <!-- =================================================
+                 STATS BAR
+                 ================================================= -->
+
+            <div class="stats-bar mb-4 animate-fade-in-up"
+                 data-delay="1">
+
+                <!-- Rating -->
+
+                <div class="stat-section">
+
+                    <div class="stat-icon-circle tone-accent">
+                        <i class="bi bi-star-fill"></i>
+                    </div>
+
+                    <div>
+
+                        <div class="stat-value">
+                            {{ profile.average_rating|floatformat:1 }}
+                        </div>
+
+                        <div class="stat-label">
+                            Avg Rating
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Reviews -->
+
+                <div class="stat-section">
+
+                    <div class="stat-icon-circle tone-secondary">
+                        <i class="bi bi-chat-square-text-fill"></i>
+                    </div>
+
+                    <div>
+
+                        <div class="stat-value">
+                            {{ profile.total_reviews }}
+                        </div>
+
+                        <div class="stat-label">
+                            Reviews
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Experience -->
+
+                <div class="stat-section">
+
+                    <div class="stat-icon-circle tone-primary">
+                        <i class="bi bi-briefcase-fill"></i>
+                    </div>
+
+                    <div>
+
+                        <div class="stat-value">
+                            {{ profile.experience_years }}
+                        </div>
+
+                        <div class="stat-label">
+                            Years Exp.
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Jobs Completed -->
+
+                <div class="stat-section">
+
+                    <div class="stat-icon-circle tone-success">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+
+                    <div>
+
+                        <div class="stat-value">
+                            {{ profile.total_jobs_completed }}
+                        </div>
+
+                        <div class="stat-label">
+                            Jobs Done
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 PENDING SERVICE REQUESTS
+                 ================================================= -->
+
+            <div class="section-card mb-4 animate-fade-in-up"
+                 data-delay="2">
+
+                <div class="section-header">
+
+                    <h6 class="mb-0 fw-semibold">
+                        Pending Service Requests
+                    </h6>
+
+                    <a href="{% url 'services:my_requests' %}"
+                       class="btn btn-sm btn-outline-primary">
+                        View All
+                    </a>
+
+                </div>
+
+
+                <div class="p-0">
+
+                    {% if pending_requests %}
+
+                        <div class="table-responsive">
+
+                            <table class="table table-hover req-table mb-0">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th class="ps-4">
+                                            Customer
+                                        </th>
+
+                                        <th>
+                                            Problem
+                                        </th>
+
+                                        <th>
+                                            Location
+                                        </th>
+
+                                        <th>
+                                            Date
+                                        </th>
+
+                                        <th class="pe-4"></th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody>
+
+                                    {% for req in pending_requests %}
+
+                                        <tr>
+
+                                            <td class="ps-4">
+
+                                                <span class="customer-chip">
+                                                    {{ req.customer.first_name|first|upper|default:req.customer.username|first|upper }}
+                                                </span>
+
+                                                {{ req.customer.get_full_name|default:req.customer.username }}
+
+                                            </td>
+
+                                            <td>
+                                                {{ req.problem_description|truncatechars:40 }}
+                                            </td>
+
+                                            <td class="text-muted">
+                                                {{ req.location }}
+                                            </td>
+
+                                            <td class="text-muted small">
+                                                {{ req.created_at|date:"M d" }}
+                                            </td>
+
+                                            <td class="pe-4">
+
+                                                <a href="{% url 'services:request_detail' req.pk %}"
+                                                   class="btn btn-sm btn-primary">
+                                                    Review
+                                                </a>
+
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="empty-state text-center py-4 text-muted">
+
+                            <i class="bi bi-inbox d-block mb-2"></i>
+
+                            <p class="mb-0">
+                                No pending requests.
+                            </p>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 RECENT REVIEWS
+                 ================================================= -->
+
+            {% if recent_reviews %}
+
+                <div class="section-card animate-fade-in-up"
+                     data-delay="3">
+
+                    <div class="section-header">
+
+                        <h6 class="mb-0 fw-semibold">
+                            Recent Reviews
+                        </h6>
+
+                    </div>
+
+
+                    <div class="p-4">
+
+                        {% for review in recent_reviews %}
+
+                            <div class="d-flex review-row">
+
+                                <div class="me-3">
+
+                                    <div class="reviewer-avatar rounded-circle text-white d-flex align-items-center justify-content-center">
+
+                                        {{ review.reviewer.first_name|first|upper }}
+
+                                    </div>
+
+                                </div>
+
+
+                                <div>
+
+                                    <div class="stars small mb-1">
+
+                                        {% for i in "12345" %}
+
+                                            {% if forloop.counter <= review.rating %}
+
+                                                <i class="bi bi-star-fill"></i>
+
+                                            {% else %}
+
+                                                <i class="bi bi-star"></i>
+
+                                            {% endif %}
+
+                                        {% endfor %}
+
+                                    </div>
+
+
+                                    <p class="mb-1 small review-comment">
+                                        "{{ review.comment|truncatechars:80 }}"
+                                    </p>
+
+
+                                    <small class="text-muted">
+
+                                        {{ review.reviewer.get_full_name }}
+                                        ·
+                                        {{ review.created_at|date:"M d" }}
+
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+```

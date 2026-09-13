@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% block title %}Customer Dashboard — AI HomeService{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row g-4">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div class="sidebar rounded-3 p-3">
+                <div class="text-center mb-4">
+                    {% if user.profile_picture %}
+                    <img src="{{ user.profile_picture.url }}" class="rounded-circle" width="80" height="80">
+                    {% else %}
+                    <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center text-white" style="width:80px;height:80px;font-size:2rem">
+                        {{ user.first_name|first|upper }}
+                    </div>
+                    {% endif %}
+                    <h6 class="mt-2 mb-0">{{ user.get_full_name|default:user.username }}</h6>
+                    <small class="text-muted">Customer</small>
+                </div>
+                <nav class="nav flex-column gap-1">
+                    <a class="nav-link active" href="{% url 'core:dashboard' %}"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                    <a class="nav-link" href="{% url 'ai_assistant:chat' %}"><i class="bi bi-robot"></i> AI Assistant</a>
+                    <a class="nav-link" href="{% url 'services:create_request' %}"><i class="bi bi-plus-circle"></i> New Request</a>
+                    <a class="nav-link" href="{% url 'services:my_requests' %}"><i class="bi bi-list-check"></i> My Requests</a>
+                    <a class="nav-link" href="{% url 'providers:provider_list' %}"><i class="bi bi-people"></i> Find Providers</a>
+                    <a class="nav-link" href="{% url 'accounts:profile' %}"><i class="bi bi-person-gear"></i> Profile</a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold mb-0">Welcome, {{ user.first_name|default:user.username }}! 👋</h4>
+                <a href="{% url 'ai_assistant:chat' %}" class="btn btn-primary">
+                    <i class="bi bi-robot me-2"></i>Ask AI Assistant
+                </a>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="card text-center p-3">
+                        <div style="font-size:2rem">📋</div>
+                        <h3 class="mb-0">{{ recent_requests.count }}</h3>
+                        <small class="text-muted">Service Requests</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center p-3">
+                        <div style="font-size:2rem">🤖</div>
+                        <h3 class="mb-0">{{ recent_conversations.count }}</h3>
+                        <small class="text-muted">AI Conversations</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center p-3">
+                        <div style="font-size:2rem">✅</div>
+                        <h3 class="mb-0">{{ recent_requests|length }}</h3>
+                        <small class="text-muted">Completed</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Assistant CTA -->
+            <div class="card bg-gradient mb-4" style="background: linear-gradient(135deg, #104f2e, #1a6230);">
+                <div class="card-body text-white p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h5 class="mb-1">🤖 AI Home Advisor</h5>
+                            <p class="mb-0 opacity-75">Describe any home problem and get instant AI-powered recommendations with verified professionals.</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <a href="{% url 'ai_assistant:chat' %}" class="btn btn-light">Try Now →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Requests -->
+            <div class="card">
+                <div class="card-header bg-white d-flex justify-content-between">
+                    <h6 class="mb-0 fw-semibold">Recent Service Requests</h6>
+                    <a href="{% url 'services:my_requests' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    {% if recent_requests %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr><th>Problem</th><th>Category</th><th>Status</th><th>Date</th><th></th></tr>
+                            </thead>
+                            <tbody>
+                                {% for req in recent_requests %}
+                                <tr>
+                                    <td>{{ req.problem_description|truncatechars:40 }}</td>
+                                    <td>{{ req.category.name|default:"—" }}</td>
+                                    <td>
+                                        <span class="badge badge-{{ req.status|lower }}">{{ req.get_status_display }}</span>
+                                    </td>
+                                    <td class="text-muted small">{{ req.created_at|date:"M d" }}</td>
+                                    <td><a href="{% url 'services:request_detail' req.pk %}" class="btn btn-xs btn-outline-secondary btn-sm">View</a></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5 text-muted">
+                        <div style="font-size:3rem">📭</div>
+                        <p>No service requests yet.</p>
+                        <a href="{% url 'ai_assistant:chat' %}" class="btn btn-primary">Ask AI for Help</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

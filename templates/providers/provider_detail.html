@@ -1,0 +1,913 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ provider.business_name }} — AI HomeService{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* =========================
+       Provider Profile Page
+    ========================== */
+
+    .provider-page {
+        padding: 2rem 0 3rem;
+    }
+
+    /* Main Cards */
+    .provider-card,
+    .info-card,
+    .reviews-card {
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        background: #fff;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .provider-card:hover,
+    .info-card:hover,
+    .reviews-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 35px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Provider Sidebar */
+    .provider-profile {
+        position: relative;
+        padding: 2rem 1.5rem;
+    }
+
+    .provider-top {
+        text-align: center;
+    }
+
+    .provider-image {
+        width: 110px;
+        height: 110px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid #fff;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        margin-bottom: 1rem;
+    }
+
+    .provider-avatar {
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        background: linear-gradient(
+            135deg,
+            var(--primary),
+            var(--primary-dark)
+        );
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        font-size: 2.5rem;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .provider-name {
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .category-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.45rem 0.85rem;
+        border-radius: 999px;
+        background: #eaf7ef;
+        color: var(--primary-dark);
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .verified-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        margin-top: 0.7rem;
+        padding: 0.4rem 0.75rem;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 600;
+    }
+
+    /* Rating */
+    .rating-box {
+        margin: 1.2rem 0;
+        padding: 1rem;
+        border-radius: var(--radius-sm);
+        background: var(--bg-light);
+    }
+
+    .stars {
+        color: #f4b400;
+        letter-spacing: 1px;
+        font-size: 1rem;
+    }
+
+    .rating-number {
+        color: var(--text-dark);
+        font-weight: 700;
+        margin-left: 0.35rem;
+    }
+
+    .review-count {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        margin-top: 0.2rem;
+    }
+
+    /* Provider Details */
+    .provider-details {
+        border-top: 1px solid var(--border-color);
+        padding-top: 1rem;
+    }
+
+    .provider-detail {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.7rem;
+        margin-bottom: 0.9rem;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+    .provider-detail:last-child {
+        margin-bottom: 0;
+    }
+
+    .provider-detail i {
+        color: var(--primary);
+        font-size: 1rem;
+        margin-top: 2px;
+    }
+
+    .provider-detail strong {
+        color: var(--text-dark);
+        font-weight: 600;
+    }
+
+    /* Status */
+    .availability-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-weight: 600;
+    }
+
+    .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .status-available {
+        background: #198754;
+    }
+
+    .status-unavailable {
+        background: #dc3545;
+    }
+
+    /* Buttons */
+    .provider-actions {
+        margin-top: 1.5rem;
+    }
+
+    .provider-actions .btn {
+        border-radius: 10px;
+        padding: 0.7rem 1rem;
+        font-weight: 600;
+        transition: all 0.25s ease;
+    }
+
+    .provider-actions .btn-primary {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: #fff;
+    }
+
+    .provider-actions .btn-primary:hover {
+        background: var(--primary-dark);
+        border-color: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 7px 18px rgba(0, 0, 0, 0.12);
+    }
+
+    .provider-actions .btn-outline-success {
+        color: var(--primary);
+        border-color: var(--primary);
+    }
+
+    .provider-actions .btn-outline-success:hover {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: #fff;
+        transform: translateY(-2px);
+    }
+
+    /* Information Cards */
+    .info-card {
+        margin-bottom: 1rem;
+    }
+
+    .info-card-body {
+        padding: 1.35rem 1.5rem;
+    }
+
+    .info-title {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 0.9rem;
+    }
+
+    .info-title i {
+        color: var(--primary);
+        font-size: 1.1rem;
+    }
+
+    .bio-text {
+        color: var(--text-muted);
+        line-height: 1.7;
+        margin-bottom: 0;
+    }
+
+    /* Skill Badges */
+    .skill-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 0.8rem;
+        border-radius: 8px;
+        background: #eaf7ef;
+        color: var(--primary-dark);
+        border: 1px solid rgba(25, 135, 84, 0.12);
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: all 0.25s ease;
+    }
+
+    .skill-badge:hover {
+        background: var(--primary);
+        color: #fff;
+        transform: translateY(-2px);
+    }
+
+    /* Service Areas */
+    .area-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.5rem 0.8rem;
+        border-radius: 8px;
+        background: var(--bg-light);
+        color: var(--text-dark);
+        border: 1px solid var(--border-color);
+        font-size: 0.8rem;
+        font-weight: 500;
+        transition: all 0.25s ease;
+    }
+
+    .area-badge:hover {
+        border-color: var(--primary);
+        color: var(--primary-dark);
+        transform: translateY(-2px);
+    }
+
+    /* Availability */
+    .availability-item {
+        padding: 0.6rem 0.8rem;
+        border-radius: 8px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        border: 1px solid transparent;
+    }
+
+    .availability-active {
+        background: #eaf7ef;
+        color: #198754;
+        border-color: rgba(25, 135, 84, 0.15);
+    }
+
+    .availability-off {
+        background: #f1f3f5;
+        color: #6c757d;
+        border-color: #dee2e6;
+    }
+
+    /* Reviews */
+    .reviews-header {
+        padding: 1rem 1.5rem;
+        background: #fff;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .review-item {
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .review-item:first-child {
+        padding-top: 0;
+    }
+
+    .review-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .reviewer-name {
+        color: var(--text-dark);
+        font-weight: 600;
+    }
+
+    .review-comment {
+        color: var(--text-muted);
+        line-height: 1.6;
+        margin: 0.4rem 0;
+    }
+
+    .review-date {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+    }
+
+    .empty-reviews {
+        padding: 1rem 0;
+        color: var(--text-muted);
+        text-align: center;
+    }
+
+    /* =========================
+       Animations
+    ========================== */
+
+    .provider-card {
+        opacity: 0;
+        animation: providerFadeIn 0.65s ease-out forwards;
+    }
+
+    .info-card {
+        opacity: 0;
+        animation: infoFadeIn 0.55s ease-out forwards;
+    }
+
+    .info-card:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    .info-card:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .info-card:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+
+    .reviews-card {
+        opacity: 0;
+        animation: infoFadeIn 0.55s ease-out 0.4s forwards;
+    }
+
+    .provider-actions .btn {
+        opacity: 0;
+        animation: buttonFadeIn 0.5s ease-out forwards;
+    }
+
+    .provider-actions .btn:nth-child(1) {
+        animation-delay: 0.45s;
+    }
+
+    .provider-actions .btn:nth-child(2) {
+        animation-delay: 0.55s;
+    }
+
+    .provider-actions .btn:nth-child(3) {
+        animation-delay: 0.65s;
+    }
+
+    @keyframes providerFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes infoFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(18px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes buttonFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive */
+    @media (max-width: 767.98px) {
+        .provider-page {
+            padding: 1rem 0 2rem;
+        }
+
+        .provider-profile {
+            padding: 1.5rem 1rem;
+        }
+
+        .info-card-body {
+            padding: 1.1rem;
+        }
+
+        .provider-image,
+        .provider-avatar {
+            width: 95px;
+            height: 95px;
+        }
+
+        .provider-name {
+            font-size: 1.15rem;
+        }
+    }
+
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+        .provider-card,
+        .info-card,
+        .reviews-card,
+        .provider-actions .btn {
+            animation: none;
+            opacity: 1;
+        }
+
+        .provider-card,
+        .info-card,
+        .reviews-card,
+        .provider-actions .btn,
+        .skill-badge,
+        .area-badge {
+            transition: none;
+        }
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container provider-page">
+
+    <div class="row g-4">
+
+        <!-- Provider Information -->
+        <div class="col-lg-4">
+
+            <div class="provider-card">
+
+                <div class="provider-profile">
+
+                    <div class="provider-top">
+
+                        {% if provider.profile_picture %}
+
+                        <img
+                            src="{{ provider.profile_picture.url }}"
+                            class="provider-image"
+                            alt="{{ provider.business_name }}"
+                        >
+
+                        {% else %}
+
+                        <div class="provider-avatar">
+                            {{ provider.category.icon|default:"🔧" }}
+                        </div>
+
+                        {% endif %}
+
+                        <h1 class="provider-name">
+                            {{ provider.business_name }}
+                        </h1>
+
+                        <span class="category-badge">
+                            <i class="bi bi-grid me-1"></i>
+                            {{ provider.category.name }}
+                        </span>
+
+                        {% if provider.is_verified %}
+                        <div>
+                            <span class="badge bg-success verified-badge">
+                                <i class="bi bi-patch-check-fill"></i>
+                                Verified Provider
+                            </span>
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Rating -->
+
+                    <div class="rating-box text-center">
+
+                        <div class="stars">
+
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= provider.average_rating %}
+                                    ★
+                                {% else %}
+                                    ☆
+                                {% endif %}
+                            {% endfor %}
+
+                            <span class="rating-number">
+                                {{ provider.average_rating }}/5
+                            </span>
+
+                        </div>
+
+                        <div class="review-count">
+                            {{ provider.total_reviews }} customer reviews
+                        </div>
+
+                    </div>
+
+
+                    <!-- Provider Details -->
+
+                    <div class="provider-details">
+
+                        <div class="provider-detail">
+
+                            <i class="bi bi-geo-alt-fill"></i>
+
+                            <div>
+                                <strong>Base Location</strong><br>
+                                {{ provider.base_location }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="provider-detail">
+
+                            <i class="bi bi-briefcase-fill"></i>
+
+                            <div>
+                                <strong>Experience</strong><br>
+                                {{ provider.experience_years }} years
+                            </div>
+
+                        </div>
+
+
+                        <div class="provider-detail">
+
+                            <i class="bi bi-currency-rupee"></i>
+
+                            <div>
+                                <strong>Charges</strong><br>
+                                {{ provider.get_charge_range }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="provider-detail">
+
+                            <i class="bi bi-circle-fill
+                            {% if provider.is_available %}
+                                text-success
+                            {% else %}
+                                text-danger
+                            {% endif %}
+                            "></i>
+
+                            <div>
+
+                                <strong>Status</strong><br>
+
+                                <span class="availability-status">
+
+                                    <span class="status-dot
+                                    {% if provider.is_available %}
+                                        status-available
+                                    {% else %}
+                                        status-unavailable
+                                    {% endif %}
+                                    "></span>
+
+                                    {% if provider.is_available %}
+                                        Available
+                                    {% else %}
+                                        Currently Unavailable
+                                    {% endif %}
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Actions -->
+
+                    <div class="provider-actions">
+
+                        {% if user.is_authenticated and user.is_customer %}
+
+                        <a
+                            href="{% url 'services:create_request' %}"
+                            class="btn btn-primary w-100"
+                        >
+                            <i class="bi bi-plus-circle me-2"></i>
+                            Request Service
+                        </a>
+
+                        {% endif %}
+
+
+                        {% if provider.phone_number %}
+
+                        <a
+                            href="tel:{{ provider.phone_number }}"
+                            class="btn btn-outline-success w-100 mt-2"
+                        >
+                            <i class="bi bi-telephone-fill me-2"></i>
+                            {{ provider.phone_number }}
+                        </a>
+
+                        {% endif %}
+
+
+                        {% if provider.whatsapp_number %}
+
+                        <a
+                            href="https://wa.me/{{ provider.whatsapp_number }}"
+                            target="_blank"
+                            class="btn btn-outline-success w-100 mt-2"
+                        >
+                            <i class="bi bi-whatsapp me-2"></i>
+                            WhatsApp
+                        </a>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Provider Details -->
+
+        <div class="col-lg-8">
+
+
+            <!-- About -->
+
+            {% if provider.bio %}
+
+            <div class="info-card">
+
+                <div class="info-card-body">
+
+                    <h2 class="info-title">
+                        <i class="bi bi-person-lines-fill"></i>
+                        About Provider
+                    </h2>
+
+                    <p class="bio-text">
+                        {{ provider.bio }}
+                    </p>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- Skills -->
+
+            {% if provider.skills.all %}
+
+            <div class="info-card">
+
+                <div class="info-card-body">
+
+                    <h2 class="info-title">
+                        <i class="bi bi-tools"></i>
+                        Skills & Expertise
+                    </h2>
+
+                    <div class="d-flex flex-wrap gap-2">
+
+                        {% for skill in provider.skills.all %}
+
+                        <span class="skill-badge">
+                            <i class="bi bi-check2-circle me-1"></i>
+                            {{ skill.name }}
+                        </span>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- Service Areas -->
+
+            {% if provider.service_areas.all %}
+
+            <div class="info-card">
+
+                <div class="info-card-body">
+
+                    <h2 class="info-title">
+                        <i class="bi bi-map-fill"></i>
+                        Service Areas
+                    </h2>
+
+                    <div class="d-flex flex-wrap gap-2">
+
+                        {% for area in provider.service_areas.all %}
+
+                        <span class="area-badge">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            {{ area.area_name }}
+                        </span>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- Availability -->
+
+            {% if provider.availability.all %}
+
+            <div class="info-card">
+
+                <div class="info-card-body">
+
+                    <h2 class="info-title">
+                        <i class="bi bi-calendar-check"></i>
+                        Availability
+                    </h2>
+
+                    <div class="d-flex flex-wrap gap-2">
+
+                        {% for avail in provider.availability.all %}
+
+                        <span class="availability-item
+                            {% if avail.is_available %}
+                                availability-active
+                            {% else %}
+                                availability-off
+                            {% endif %}
+                        ">
+
+                            <i class="bi bi-clock me-1"></i>
+
+                            {{ avail.get_day_display }}:
+
+                            {{ avail.start_time|time:"g:i A" }}
+                            —
+                            {{ avail.end_time|time:"g:i A" }}
+
+                        </span>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- Reviews -->
+
+            <div class="reviews-card">
+
+                <div class="reviews-header">
+
+                    <h2 class="info-title mb-0">
+                        <i class="bi bi-star-fill"></i>
+                        Customer Reviews
+                    </h2>
+
+                </div>
+
+
+                <div class="card-body p-4">
+
+                    {% for review in reviews %}
+
+                    <div class="review-item">
+
+                        <div class="d-flex justify-content-between align-items-start gap-3">
+
+                            <strong class="reviewer-name">
+                                {{ review.reviewer.get_full_name|default:review.reviewer.username }}
+                            </strong>
+
+                            <div class="stars">
+
+                                {% for i in "12345" %}
+
+                                    {% if forloop.counter <= review.rating %}
+                                        ★
+                                    {% else %}
+                                        ☆
+                                    {% endif %}
+
+                                {% endfor %}
+
+                            </div>
+
+                        </div>
+
+
+                        <p class="review-comment">
+                            {{ review.comment }}
+                        </p>
+
+
+                        <small class="review-date">
+                            <i class="bi bi-calendar3 me-1"></i>
+                            {{ review.created_at|date:"M d, Y" }}
+                        </small>
+
+                    </div>
+
+                    {% empty %}
+
+                    <div class="empty-reviews">
+
+                        <i class="bi bi-chat-square-text fs-3 d-block mb-2"></i>
+
+                        <p class="mb-0">
+                            No reviews yet.
+                        </p>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

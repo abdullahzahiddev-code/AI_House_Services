@@ -1,0 +1,27 @@
+# ── Core Django ──────────────────────────────────────────────────────────────
+Django>=6.0
+djangorestframework>=3.18
+djangorestframework-simplejwt>=5.5
+django-cors-headers>=4.9
+django-environ>=0.11
+django-crispy-forms>=2.7
+crispy-bootstrap5>=2024.2
+django-filter>=24.0
+Pillow>=10.0
+
+# ── AI / RAG / LLM ───────────────────────────────────────────────────────────
+openai>=1.40
+chromadb>=0.5
+sentence-transformers>=3.0
+
+# ── Document loaders ─────────────────────────────────────────────────────────
+pypdf>=4.0
+
+# ── Utilities ────────────────────────────────────────────────────────────────
+python-dotenv>=1.0
+requests>=2.32
+tqdm>=4.66
+
+# ── LangChain (optional — not needed for core RAG functionality) ──────────────
+# Install separately if needed:
+# pip install langchain langchain-community langchain-openai langchain-chroma

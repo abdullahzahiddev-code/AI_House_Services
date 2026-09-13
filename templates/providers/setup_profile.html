@@ -1,0 +1,1021 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Setup Provider Profile — AI HomeService{% endblock %}
+
+
+{% block extra_css %}
+<style>
+
+    /* =========================================================
+       Provider Profile Setup
+    ========================================================= */
+
+    .profile-setup-page {
+        padding: 2rem 0 3rem;
+    }
+
+
+    /* =========================================================
+       Main Card
+    ========================================================= */
+
+    .profile-setup-card {
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+
+        opacity: 0;
+        animation: setupFadeIn 0.65s ease-out forwards;
+
+        transition:
+            box-shadow 0.3s ease,
+            transform 0.3s ease;
+    }
+
+    .profile-setup-card:hover {
+        box-shadow: 0 15px 38px rgba(0, 0, 0, 0.09);
+    }
+
+
+    /* =========================================================
+       Header
+    ========================================================= */
+
+    .profile-setup-header {
+        padding: 1.5rem 1.75rem;
+
+        background: linear-gradient(
+            135deg,
+            #f3faf6,
+            #ffffff
+        );
+
+        border-bottom: 1px solid var(--border-color);
+    }
+
+
+    .setup-title-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+    }
+
+
+    .setup-icon {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+
+        border-radius: 12px;
+
+        background: var(--primary);
+        color: #fff;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 1.25rem;
+
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+
+        animation: iconPop 0.6s ease-out 0.25s both;
+
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease;
+    }
+
+
+    .setup-icon:hover {
+        transform: translateY(-3px) rotate(-3deg);
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.14);
+    }
+
+
+    .setup-title {
+        color: var(--text-dark);
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin: 0;
+
+        animation: textSlideIn 0.55s ease-out 0.3s both;
+    }
+
+
+    .setup-subtitle {
+        color: var(--text-muted);
+        font-size: 0.82rem;
+        margin: 0.25rem 0 0;
+        line-height: 1.5;
+
+        animation: textSlideIn 0.55s ease-out 0.4s both;
+    }
+
+
+    /* =========================================================
+       Form Body
+    ========================================================= */
+
+    .profile-setup-body {
+        padding: 1.75rem;
+    }
+
+
+    /* =========================================================
+       Form Fields
+    ========================================================= */
+
+    .form-field-wrapper {
+        margin-bottom: 1.25rem;
+
+        opacity: 0;
+
+        animation:
+            fieldFadeIn
+            0.5s
+            ease-out
+            forwards;
+    }
+
+
+    /* Staggered field animations */
+
+    .form-field-wrapper:nth-child(1) {
+        animation-delay: 0.15s;
+    }
+
+    .form-field-wrapper:nth-child(2) {
+        animation-delay: 0.20s;
+    }
+
+    .form-field-wrapper:nth-child(3) {
+        animation-delay: 0.25s;
+    }
+
+    .form-field-wrapper:nth-child(4) {
+        animation-delay: 0.30s;
+    }
+
+    .form-field-wrapper:nth-child(5) {
+        animation-delay: 0.35s;
+    }
+
+    .form-field-wrapper:nth-child(6) {
+        animation-delay: 0.40s;
+    }
+
+    .form-field-wrapper:nth-child(7) {
+        animation-delay: 0.45s;
+    }
+
+    .form-field-wrapper:nth-child(8) {
+        animation-delay: 0.50s;
+    }
+
+    .form-field-wrapper:nth-child(9) {
+        animation-delay: 0.55s;
+    }
+
+    .form-field-wrapper:nth-child(10) {
+        animation-delay: 0.60s;
+    }
+
+    .form-field-wrapper:nth-child(11) {
+        animation-delay: 0.65s;
+    }
+
+    .form-field-wrapper:nth-child(12) {
+        animation-delay: 0.70s;
+    }
+
+
+    /* =========================================================
+       Labels
+    ========================================================= */
+
+    .form-label-custom {
+        display: block;
+
+        color: var(--text-dark);
+        font-size: 0.85rem;
+        font-weight: 600;
+
+        margin-bottom: 0.45rem;
+
+        transition: color 0.25s ease;
+    }
+
+
+    .form-field-wrapper:focus-within .form-label-custom {
+        color: var(--primary);
+    }
+
+
+    .required-star {
+        color: #dc3545;
+        margin-left: 2px;
+    }
+
+
+    /* =========================================================
+       Django Generated Fields
+    ========================================================= */
+
+    .profile-setup-body input:not([type="checkbox"]):not([type="radio"]),
+    .profile-setup-body select,
+    .profile-setup-body textarea {
+
+        width: 100%;
+
+        border: 1px solid var(--border-color);
+        border-radius: 9px;
+
+        padding: 0.7rem 0.85rem;
+
+        background: #fff;
+        color: var(--text-dark);
+
+        font-size: 0.88rem;
+
+        transition:
+            border-color 0.25s ease,
+            box-shadow 0.25s ease,
+            transform 0.25s ease,
+            background-color 0.25s ease;
+    }
+
+
+    /* Hover */
+
+    .profile-setup-body input:not([type="checkbox"]):not([type="radio"]):hover,
+    .profile-setup-body select:hover,
+    .profile-setup-body textarea:hover {
+
+        border-color: #b7c9bd;
+    }
+
+
+    /* Focus */
+
+    .profile-setup-body input:not([type="checkbox"]):not([type="radio"]):focus,
+    .profile-setup-body select:focus,
+    .profile-setup-body textarea:focus {
+
+        outline: none;
+
+        border-color: var(--primary);
+
+        background: #fff;
+
+        box-shadow:
+            0 0 0 3px rgba(25, 135, 84, 0.1);
+
+        transform: translateY(-1px);
+    }
+
+
+    /* Textarea */
+
+    .profile-setup-body textarea {
+        min-height: 110px;
+        resize: vertical;
+    }
+
+
+    /* File Input */
+
+    .profile-setup-body input[type="file"] {
+
+        padding: 0.55rem;
+
+        background: var(--bg-light);
+
+        cursor: pointer;
+    }
+
+
+    .profile-setup-body input[type="file"]:hover {
+        background: #f5f8f6;
+    }
+
+
+    /* Checkbox & Radio */
+
+    .profile-setup-body input[type="checkbox"],
+    .profile-setup-body input[type="radio"] {
+
+        accent-color: var(--primary);
+
+        transition:
+            transform 0.2s ease;
+    }
+
+
+    .profile-setup-body input[type="checkbox"]:hover,
+    .profile-setup-body input[type="radio"]:hover {
+
+        transform: scale(1.08);
+    }
+
+
+    /* =========================================================
+       Help Text
+    ========================================================= */
+
+    .field-help {
+        display: block;
+
+        margin-top: 0.4rem;
+
+        color: var(--text-muted);
+
+        font-size: 0.75rem;
+        line-height: 1.5;
+
+        animation: helpFadeIn 0.4s ease-out;
+    }
+
+
+    /* =========================================================
+       Errors
+    ========================================================= */
+
+    .field-error {
+
+        margin-top: 0.35rem;
+
+        color: #dc3545;
+
+        font-size: 0.75rem;
+        font-weight: 500;
+
+        animation: errorShake 0.4s ease-out;
+    }
+
+
+    .profile-setup-body .errorlist {
+
+        list-style: none;
+
+        padding: 0;
+
+        margin: 0.35rem 0 0;
+
+        color: #dc3545;
+
+        font-size: 0.75rem;
+
+        animation: errorShake 0.4s ease-out;
+    }
+
+
+    /* Non-field Django errors */
+
+    .non-field-errors {
+
+        margin-bottom: 1.25rem;
+
+        padding: 0.8rem 1rem;
+
+        border-radius: 9px;
+
+        background: #fff5f5;
+
+        border: 1px solid rgba(220, 53, 69, 0.15);
+
+        color: #dc3545;
+
+        font-size: 0.8rem;
+
+        animation: errorShake 0.4s ease-out;
+    }
+
+
+    /* =========================================================
+       Form Actions
+    ========================================================= */
+
+    .profile-actions {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 0.7rem;
+
+        padding-top: 0.75rem;
+
+        margin-top: 0.5rem;
+
+        border-top: 1px solid var(--border-color);
+
+        opacity: 0;
+
+        animation:
+            actionsFadeIn
+            0.55s
+            ease-out
+            0.75s
+            forwards;
+    }
+
+
+    .profile-actions .btn {
+
+        border-radius: 9px;
+
+        padding: 0.65rem 1.15rem;
+
+        font-size: 0.85rem;
+        font-weight: 600;
+
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease,
+            background-color 0.25s ease,
+            border-color 0.25s ease;
+    }
+
+
+    /* Primary Button */
+
+    .profile-actions .btn-primary {
+
+        background: var(--primary);
+
+        border-color: var(--primary);
+
+        color: #fff;
+    }
+
+
+    .profile-actions .btn-primary:hover {
+
+        background: var(--primary-dark);
+
+        border-color: var(--primary-dark);
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 7px 18px rgba(0, 0, 0, 0.12);
+    }
+
+
+    .profile-actions .btn-primary:active {
+
+        transform: translateY(0);
+
+        box-shadow: none;
+    }
+
+
+    /* Secondary Button */
+
+    .profile-actions .btn-outline-secondary {
+
+        color: var(--text-muted);
+
+        border-color: var(--border-color);
+    }
+
+
+    .profile-actions .btn-outline-secondary:hover {
+
+        background: var(--bg-light);
+
+        color: var(--text-dark);
+
+        border-color: #adb5bd;
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 5px 14px rgba(0, 0, 0, 0.07);
+    }
+
+
+    .profile-actions .btn-outline-secondary:active {
+
+        transform: translateY(0);
+    }
+
+
+    /* =========================================================
+       Bottom Hint
+    ========================================================= */
+
+    .profile-hint {
+
+        display: flex;
+
+        align-items: flex-start;
+
+        gap: 0.6rem;
+
+        margin-top: 1.25rem;
+
+        padding: 0.85rem 1rem;
+
+        border-radius: 9px;
+
+        background: #f3faf6;
+
+        border: 1px solid rgba(25, 135, 84, 0.12);
+
+        color: var(--text-muted);
+
+        font-size: 0.76rem;
+
+        line-height: 1.5;
+
+        opacity: 0;
+
+        animation:
+            hintFadeIn
+            0.55s
+            ease-out
+            0.9s
+            forwards;
+
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease;
+    }
+
+
+    .profile-hint:hover {
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 6px 16px rgba(25, 135, 84, 0.08);
+    }
+
+
+    .profile-hint i {
+
+        color: var(--primary);
+
+        margin-top: 2px;
+
+        animation: bulbPulse 2s ease-in-out infinite;
+    }
+
+
+    /* =========================================================
+       Animations
+    ========================================================= */
+
+    /* Main card */
+
+    @keyframes setupFadeIn {
+
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+
+    /* Icon */
+
+    @keyframes iconPop {
+
+        0% {
+            opacity: 0;
+            transform: scale(0.7) rotate(-8deg);
+        }
+
+        70% {
+            opacity: 1;
+            transform: scale(1.08) rotate(2deg);
+        }
+
+        100% {
+            opacity: 1;
+            transform: scale(1) rotate(0);
+        }
+    }
+
+
+    /* Header text */
+
+    @keyframes textSlideIn {
+
+        from {
+            opacity: 0;
+            transform: translateX(-12px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+
+    /* Form fields */
+
+    @keyframes fieldFadeIn {
+
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+
+    /* Help text */
+
+    @keyframes helpFadeIn {
+
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+
+    /* Actions */
+
+    @keyframes actionsFadeIn {
+
+        from {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+
+    /* Hint */
+
+    @keyframes hintFadeIn {
+
+        from {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+
+    /* Lightbulb */
+
+    @keyframes bulbPulse {
+
+        0%,
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: scale(1.12);
+            opacity: 0.75;
+        }
+    }
+
+
+    /* Error */
+
+    @keyframes errorShake {
+
+        0%,
+        100% {
+            transform: translateX(0);
+        }
+
+        25% {
+            transform: translateX(-3px);
+        }
+
+        75% {
+            transform: translateX(3px);
+        }
+    }
+
+
+    /* =========================================================
+       Responsive
+    ========================================================= */
+
+    @media (max-width: 767.98px) {
+
+        .profile-setup-page {
+            padding: 1rem 0 2rem;
+        }
+
+
+        .profile-setup-header {
+            padding: 1.2rem 1rem;
+        }
+
+
+        .profile-setup-body {
+            padding: 1.2rem 1rem;
+        }
+
+
+        .setup-icon {
+
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+
+            font-size: 1.05rem;
+        }
+
+
+        .setup-title {
+            font-size: 1.05rem;
+        }
+
+
+        .setup-subtitle {
+            font-size: 0.78rem;
+        }
+
+
+        .profile-actions {
+
+            flex-direction: column;
+
+            align-items: stretch;
+        }
+
+
+        .profile-actions .btn {
+
+            width: 100%;
+
+            margin: 0 !important;
+        }
+    }
+
+
+    /* =========================================================
+       Accessibility
+    ========================================================= */
+
+    @media (prefers-reduced-motion: reduce) {
+
+        .profile-setup-card,
+        .setup-icon,
+        .setup-title,
+        .setup-subtitle,
+        .form-field-wrapper,
+        .profile-actions,
+        .profile-hint,
+        .field-help,
+        .field-error,
+        .errorlist,
+        .non-field-errors {
+
+            animation: none;
+
+            opacity: 1;
+        }
+
+
+        .profile-setup-body input,
+        .profile-setup-body select,
+        .profile-setup-body textarea,
+        .profile-actions .btn,
+        .profile-hint,
+        .setup-icon {
+
+            transition: none;
+        }
+    }
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container profile-setup-page">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8 col-md-10">
+
+            <div class="profile-setup-card">
+
+                <!-- =================================================
+                     Header
+                ================================================== -->
+
+                <div class="profile-setup-header">
+
+                    <div class="setup-title-wrapper">
+
+                        <div class="setup-icon">
+                            <i class="bi bi-person-badge-fill"></i>
+                        </div>
+
+                        <div>
+
+                            <h1 class="setup-title">
+                                Complete Your Provider Profile
+                            </h1>
+
+                            <p class="setup-subtitle">
+                                A complete profile helps customers find you
+                                through our AI recommendation system.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     Form Body
+                ================================================== -->
+
+                <div class="profile-setup-body">
+
+                    <form
+                        method="post"
+                        enctype="multipart/form-data"
+                    >
+
+                        {% csrf_token %}
+
+
+                        <!-- Non-field Errors -->
+
+                        {% if form.non_field_errors %}
+
+                            <div class="non-field-errors">
+
+                                {% for error in form.non_field_errors %}
+
+                                    <div>
+                                        <i class="bi bi-exclamation-circle me-1"></i>
+                                        {{ error }}
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <!-- Django Form Fields -->
+
+                        {% for field in form %}
+
+                            <div class="form-field-wrapper">
+
+                                <label
+                                    for="{{ field.id_for_label }}"
+                                    class="form-label-custom"
+                                >
+
+                                    {{ field.label }}
+
+                                    {% if field.field.required %}
+
+                                        <span class="required-star">
+                                            *
+                                        </span>
+
+                                    {% endif %}
+
+                                </label>
+
+
+                                {{ field }}
+
+
+                                <!-- Help Text -->
+
+                                {% if field.help_text %}
+
+                                    <small class="field-help">
+
+                                        <i class="bi bi-info-circle me-1"></i>
+
+                                        {{ field.help_text }}
+
+                                    </small>
+
+                                {% endif %}
+
+
+                                <!-- Field Errors -->
+
+                                {% for error in field.errors %}
+
+                                    <div class="field-error">
+
+                                        <i class="bi bi-exclamation-circle me-1"></i>
+
+                                        {{ error }}
+
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% endfor %}
+
+
+                        <!-- =================================================
+                             Form Actions
+                        ================================================== -->
+
+                        <div class="profile-actions">
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+
+                                <i class="bi bi-check-circle me-2"></i>
+
+                                Save Profile
+
+                            </button>
+
+
+                            <a
+                                href="{% url 'providers:dashboard' %}"
+                                class="btn btn-outline-secondary"
+                            >
+
+                                <i class="bi bi-arrow-left me-2"></i>
+
+                                Cancel
+
+                            </a>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             Helpful Hint
+                        ================================================== -->
+
+                        <div class="profile-hint">
+
+                            <i class="bi bi-lightbulb-fill"></i>
+
+                            <span>
+
+                                Add accurate information about your services,
+                                experience, location and availability.
+                                This helps customers and the AI system
+                                understand which services you provide.
+
+                            </span>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+```
