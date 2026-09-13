@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🏠 AI Home Service Platform
 
 An AI-powered home service provider platform built with Django, featuring a **RAG (Retrieval-Augmented Generation) AI assistant** that understands home problems and recommends the right professional.
@@ -196,3 +197,6 @@ The AI assistant automatically detects dangerous situations and provides immedia
 - **Works offline** — RAG and fallback mode work without internet
 - **Provider verification** — Admin must mark providers as verified before they appear in AI recommendations
 - **Seed data** — 8 service categories, 75+ skills, 8 sample verified providers in Rawalpindi/Islamabad area
+=======
+# AI_House_Services
+>>>>>>> f7515dfd2b970de58d0e2fa2cf89a3167b86afbc
