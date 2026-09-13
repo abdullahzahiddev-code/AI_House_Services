@@ -21,6 +21,7 @@ pypdf>=4.0
 python-dotenv>=1.0
 requests>=2.32
 tqdm>=4.66
+gunicorn
 
 # ── LangChain (optional — not needed for core RAG functionality) ──────────────
 # Install separately if needed:
